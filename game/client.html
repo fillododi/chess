@@ -12,6 +12,7 @@
     <div id="divPlayers"></div>
     <div id="divBoard"></div>
     <script>
+        //dichiarazione variabili
         let clientId = null
         let gameId = null
         let ws = new WebSocket("ws://localhost:5000")
@@ -21,51 +22,51 @@
         const divPlayers = document.getElementById("divPlayers")
         const divBoard = document.getElementById("divBoard")
 
-        btnCreate.addEventListener("click", e => {
-            const payload = {
+        btnCreate.addEventListener("click", e => { //click sul bottone crea partita
+            const payload = { //richiesta che verrà mandata
                 "method": "create",
                 "clientId": clientId
             }
-            ws.send(JSON.stringify(payload))
+            ws.send(JSON.stringify(payload)) //invia richiesta
         })
 
-        btnJoin.addEventListener("click", e => {
-            if(!gameId){
-                gameId = txtJoin.value
-            }
-            const payload = {
+        btnJoin.addEventListener("click", e => { //click sul bottone entra in partita
+            gameId = txtJoin.value //id partita inserito
+            const payload = { //richiesta che verrà mandata
                 "method": "join",
                 "clientId": clientId,
                 "gameId": gameId
             }
-            ws.send(JSON.stringify(payload))
+            ws.send(JSON.stringify(payload)) //invia richiesta
         })
 
-        ws.onmessage = message => {
-            const response = JSON.parse(message.data)
-            if(response.method === "connect"){
+        ws.onmessage = message => { //quando si ricevono risposte dal server
+            const response = JSON.parse(message.data) //estrae risposta
+            if(response.method === "connect"){ //risposta che arriva quando il client si connette, ottenendo il client id
                 clientId = response.clientId
                 console.log("Client id is ", response.clientId)
             }
-            if(response.method === "create"){
+            if(response.method === "create"){ //risposta alla creazione della partita, in cui si ottiene il gameid
                 gameId = response.gameId
                 console.log("Created game with id ", response.gameId)
-                const payload = {
+
+                //richiesta di unione alla partita appena creata
+                const payload = { //richiesta che verrà mandata
                     "method": "join",
                     "clientId": clientId,
                     "gameId": gameId
                 }
-                ws.send(JSON.stringify(payload))
+                ws.send(JSON.stringify(payload)) //invia richiesta
             }
-            if(response.method === "join"){
-                const game = response.game
-                while(divPlayers.firstChild){
+            if(response.method === "join"){ //risposta all'entrata in partita
+                const game = response.game //dati di gioco iniziali: chi è connesso, chi è bianco e nero etc.
+                while(divPlayers.firstChild){ //libera spazio con scritte di chi è connesso
                     divPlayers.removeChild(divPlayers.firstChild)
                 }
-                while(divBoard.firstChild){
+                while(divBoard.firstChild){ //libera spazio scacchiera
                     divBoard.removeChild(divBoard.firstChild)
                 }
-                //QUI VA LA SCACCHIERA
+                //SCACCHIERA
                 const txt = document.createElement("p")
                 txt.innerHTML = "Scacchiera della partita " + game.id
                 divBoard.appendChild(txt)
@@ -79,6 +80,7 @@
                     divBoard.appendChild(c)
                 }
 
+                //SPAZIO CON SCRITTO CHI E' CONNESSO
                 game.clients.forEach(client => {
                     const d = document.createElement("div")
                     d.style.width = "200px"
