@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <h1>Chess</h1>
+    <button id="btnCreate">New Game</button>
+    <button id="btnJoin">Join Game</button>
+    <input type="text" id="joinGameIdTxt"/>
+    <div id="divPlayers"></div>
+    <div id="divBoard"></div>
+    <script>
+        let clientId = null
+        let gameId = null
+        let ws = new WebSocket("ws://localhost:5000")
+        const btnCreate = document.getElementById("btnCreate")
+        const btnJoin = document.getElementById("btnJoin")
+        const txtJoin = document.getElementById("joinGameIdTxt")
+        const divPlayers = document.getElementById("divPlayers")
+        const divBoard = document.getElementById("divBoard")
+
+        btnCreate.addEventListener("click", e => {
+            const payload = {
+                "method": "create",
+                "clientId": clientId
+            }
+            ws.send(JSON.stringify(payload))
+        })
+
+        btnJoin.addEventListener("click", e => {
+            if(!gameId){
+                gameId = txtJoin.value
+            }
+            const payload = {
+                "method": "join",
+                "clientId": clientId,
+                "gameId": gameId
+            }
+            ws.send(JSON.stringify(payload))
+        })
+
+        ws.onmessage = message => {
+            const response = JSON.parse(message.data)
+            if(response.method === "connect"){
+                clientId = response.clientId
+                console.log("Client id is ", response.clientId)
+            }
+            if(response.method === "create"){
+                gameId = response.gameId
+                console.log("Created game with id ", response.gameId)
+                const payload = {
+                    "method": "join",
+                    "clientId": clientId,
+                    "gameId": gameId
+                }
+                ws.send(JSON.stringify(payload))
+            }
+            if(response.method === "join"){
+                const game = response.game
+                while(divPlayers.firstChild){
+                    divPlayers.removeChild(divPlayers.firstChild)
+                }
+                while(divBoard.firstChild){
+                    divBoard.removeChild(divBoard.firstChild)
+                }
+                //QUI VA LA SCACCHIERA
+                const txt = document.createElement("p")
+                txt.innerHTML = "Scacchiera della partita " + game.id
+                divBoard.appendChild(txt)
+                for(let i = 0; i < 8; i++){
+                    const c = document.createElement("div")
+                    c.id = "casella" + i
+                    c.style.backgroundColor = "red"
+                    c.style.width = "200px"
+                    c.style.height = "200px"
+                    c.style.border = "1px solid black"
+                    divBoard.appendChild(c)
+                }
+
+                game.clients.forEach(client => {
+                    const d = document.createElement("div")
+                    d.style.width = "200px"
+                    d.style.border = "1px solid black"
+                    d.textContent = "client connesso: " + client.clientId
+                    divPlayers.appendChild(d)
+                })
+            }
+        }
+    </script>
+</body>
+</html>
