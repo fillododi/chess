@@ -89,6 +89,33 @@
                     divPlayers.appendChild(d)
                 })
             }
+            if(response.method === "leave"){ //notifica che qualcuno è uscito dalla partita
+                const game = response.game
+                const leavingPlayer = response.leavingPlayer
+                while(divPlayers.firstChild){ //libera spazio con scritte di chi è connesso
+                    divPlayers.removeChild(divPlayers.firstChild)
+                }
+                while(divBoard.firstChild){ //libera spazio scacchiera
+                    divBoard.removeChild(divBoard.firstChild)
+                }
+                //SCACCHIERA
+                const txt = document.createElement("p")
+                txt.innerHTML = "Scacchiera della partita " + game.id + " - TERMINATA"
+                divBoard.appendChild(txt)
+                const txtAlert = document.createElement("p")
+                txtAlert.style.color = "red"
+                txtAlert.innerHTML = leavingPlayer + " ha lasciato la partita"
+                divBoard.appendChild(txtAlert)
+                for(let i = 0; i < 8; i++){
+                    const c = document.createElement("div")
+                    c.id = "casella" + i
+                    c.style.backgroundColor = "red"
+                    c.style.width = "200px"
+                    c.style.height = "200px"
+                    c.style.border = "1px solid black"
+                    divBoard.appendChild(c)
+                }
+            }
         }
     </script>
 </body>
