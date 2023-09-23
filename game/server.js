@@ -1,9 +1,14 @@
-const http = require("http")
-const webSocketServer = require("websocket").server
+import http from "http"
+import url from "url"
+import {server as webSocketServer} from "websocket"
 const httpServer = http.createServer()
-const app = require("express")()
+import express from "express"
+const app = express()
+const __dirname = url.fileURLToPath(new URL('.', import.meta.url));
 
-app.get("/", (req, res)=>res.sendFile(__dirname + "/client.html")) //restituisce il file html al client
+import {Pawn, Rook, Knight, Bishop, King, Queen} from './server/classes.js'
+
+app.get("/", (req, res)=>res.sendFile(__dirname + "./client.html")) //restituisce il file html al client
 app.listen(5001, ()=>console.log("Server listening on port 5001")) //apre la porta 5001 per le richieste all'html
 
 httpServer.listen(5000, ()=>{console.log("Server listening on port 5000")}) //apre la porta 5000 per il socket del gioco
@@ -58,7 +63,15 @@ wsServer.on("request", request => { //quando il client manda richieste al socket
                 const gameId = guid() //genera id partita
                 games[gameId] = { //aggiunge la partita al dictionary delle partite (aka crea la partita: qui vanno tutti i dati iniziali della partita)
                     "id": gameId,
-                    "clients": []
+                    "clients": [],
+                    "active_player": null,
+                    "draw_offer": {
+                        "offering_client": null,
+                        "receiving_client": null
+                    },
+                    "turn": null,
+                    "board": [],
+                    "history": []
                 }
                 const payload = { //risposta che verrà data con all'interno l'id della partita
                     "method": "create",
@@ -73,16 +86,17 @@ wsServer.on("request", request => { //quando il client manda richieste al socket
             const clientId = result.clientId //client che ha chiesto di partecipare
             const gameId = result.gameId //id della partita alla quale vuole partecipare
             const game = games[gameId] //partita corrispondente all'id richiesto
-            if(game.clients.length > 1){ //se ci sono già 2 client nella partita non fa entrare
+            if(game.clients.length > 1){ //se c'è già 1 client nella partita (e quindi quello che prova a connettersi è il secondo) non fa entrare
                 console.log(clientId, " tried to enter game ", gameId, " but it's full")
                 return
             } else if(clients[clientId].gameId) {
                 console.log(clientId, " tried to enter game ", gameId, " but is already playing another game")
                 return
             } else {
-                clients[clientId].gameId = gameId //associa al cliente la partita a cui si sta unendo
+                clients[clientId].gameId = gameId //associa al cliente la partita a cui si sta unendo per evitare che entri anche in altre
                 game.clients.push({ //aggiunge il client alla partita: qui vanno messi tutti i dati di gioco del client
                     "clientId": clientId,
+                    "color": null
                 })
                 console.log(clientId, " has joined the game with id ", gameId, " players are now: ")
                 const payload = { //risposta che verrà data con all'interno l'oggetto della partita che contiene tutti i dati di gioco
@@ -93,6 +107,47 @@ wsServer.on("request", request => { //quando il client manda richieste al socket
                     console.log("player: ", client)
                     clients[client.clientId].connection.send(JSON.stringify(payload))
                 })
+                if(game.clients.length == 2){ //se si è connesso il secondo giocatore: setta la partita e inizia
+                    console.log("Starting game ", game.id)
+                    const randomNumber = Math.random() //per decidere chi è bianco e chi nero
+                    if(randomNumber < 0.5){
+                        game.clients[0].color = 'white'
+                        game.clients[1].color = 'black'
+                    } else {
+                        game.clients[0].color = 'black'
+                        game.clients[1].color = 'white'
+                    }
+                    game.active_player = game.clients.find(client => client.color.includes('white')) //fa iniziare il bianco
+                    game.clients.map(client => console.log(client.clientId, " is ", client.color))
+                    console.log(game.active_player.clientId, " starts")
+                    game.turn = 1 //inizia a contare i turni
+                    game.board = generateBoard() //genera la scacchiera
+                    console.log("Board generated")
+                    printBoard(game.board)
+                    console.log("Game started. It's now turn 1")
+                    const alphabet = "abcdefgh"
+                    const boardToSend = game.board.map(piece => {return { //sostituisce numeri colonne con lettere
+                        "color": piece.color,
+                        "type": piece.type,
+                        "column": alphabet[piece.col - 1],
+                        "row": piece.row
+                    }})
+                    const payload = { //risposta che verrà data per fare iniziare la partita
+                        "method": "start",
+                        "game": {
+                            "id": gameId,
+                            "clients": game.clients,
+                            "active_player": game.active_player,
+                            "draw_offer": game.draw_offer,
+                            "turn": game.turn,
+                            "board": boardToSend,
+                            "history": game.history
+                        }
+                    }
+                    game.clients.forEach(client => { //invia la risposta a tutti i client associati alla partita
+                        clients[client.clientId].connection.send(JSON.stringify(payload))
+                    })
+                }
             }
         }
     })
@@ -111,6 +166,69 @@ wsServer.on("request", request => { //quando il client manda richieste al socket
     }
     connection.send(JSON.stringify(payload)) //invia la risposta al client quando esso si connette
 })
+
+const generateBoard = () => { //genera i pezzi iniziali
+    let p = null
+    let board = []
+    const alphabet = "abcdefgh" //serve per conversioni lettera/numero
+    //generazione pezzi
+    for(let i = 0; i < 8; i++){
+        for(let j = 1; j <= 8; j++){
+            if(j == 2){
+                p = new Pawn('white', 2, alphabet[i].toString())
+            }
+            else if(j == 7){
+                p = new Pawn('black', 7, alphabet[i].toString())
+            }
+            else if(j == 1){
+                if(i == 0 || i == 7){
+                    p = new Rook('white', 1, alphabet[i].toString())
+                }
+                else if(i == 1 || i == 6){
+                    p = new Knight('white', 1, alphabet[i].toString())
+                }
+                else if(i == 2 || i == 5){
+                    p = new Bishop('white',1, alphabet[i].toString())
+                }
+                else if(i == 3){
+                    p = new Queen('white', 1, alphabet[i].toString())
+                }
+                else if(i == 4){
+                    p = new King('white', 1, alphabet[i].toString())
+                } else {
+                    continue
+                }
+            }
+            else if(j == 8){
+                if(i == 0 || i == 7){
+                    p = new Rook('black', 8, alphabet[i].toString())
+                }
+                else if(i == 1 || i == 6){
+                    p = new Knight('black', 8, alphabet[i].toString())
+                }
+                else if(i == 2 || i == 5){
+                    p = new Bishop('black',8, alphabet[i].toString())
+                }
+                else if(i == 3){
+                    p = new Queen('black', 8, alphabet[i].toString())
+                }
+                else if(i == 4){
+                    p = new King('black', 8, alphabet[i].toString())
+                } else {
+                    continue
+                }
+            } else {
+                continue
+            }
+            board.push(p) //aggiunge il pezzo alla scacchiera
+        }
+    }
+    return board
+}
+
+const printBoard = (board) => {
+    board.forEach(piece => piece.print())
+}
 
 function S4() { //serve a generare stringhe di numeri
     return (((1+Math.random())*0x10000)|0).toString(16).substring(1);
