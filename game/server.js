@@ -34,19 +34,7 @@ wsServer.on("request", request => { //quando il client manda richieste al socket
             const clientId = client.id
             const gameId = client.gameId //partita a cui il client sta giocando
             if (gameId) { //se il client era in gioco
-                const game = games[gameId] //trova la partita
-                console.log(clientId, " left the game with id ", gameId)
-                const payload = { //risposta da mandare agli altri client nella partita
-                    "method": "leave",
-                    "game": game,
-                    "leavingPlayer": clientId
-                }
-                game.clients.forEach(client => { //invia la risposta agli altri client
-                    clients[client.clientId].gameId = null //"libera" gli altri giocatori che ora possono fare altre partite
-                    clients[client.clientId].connection.send(JSON.stringify(payload))
-                })
-                delete games[gameId] //rimuove la partita dall'elenco
-                console.log("game ", gameId, " has finished")
+                handleQuit(clientId, gameId) //fa uscire il giocatore dalla partita
             }
             delete clients[clientId] //rimuove il giocatore dall'elenco
             console.log("closed connection")
@@ -150,6 +138,14 @@ wsServer.on("request", request => { //quando il client manda richieste al socket
                 }
             }
         }
+        if(result.method === "leave"){
+            const clientId = result.clientId //client che ha abbandonato
+            const gameId = result.gameId //partita abbandonata
+            if(clients[clientId].gameId != gameId){ //se non coincidono, ovvero errore
+                return
+            }
+            handleQuit(clientId, gameId) //fa uscire il giocatore dalla partita
+        }
     })
 
     //quello che succede quando il client si connette
@@ -224,6 +220,22 @@ const generateBoard = () => { //genera i pezzi iniziali
         }
     }
     return board
+}
+
+const handleQuit = (clientId, gameId) => {
+    const game = games[gameId] //trova la partita
+    console.log(clientId, " left the game with id ", gameId)
+    const payload = { //risposta da mandare ai client nella partita
+        "method": "leave",
+        "game": game,
+        "leavingPlayer": clientId
+    }
+    game.clients.forEach(client => { //invia la risposta ai client
+        clients[client.clientId].gameId = null //"libera" gli altri giocatori che ora possono fare altre partite
+        clients[client.clientId].connection.send(JSON.stringify(payload))
+    })
+    delete games[gameId] //rimuove la partita dall'elenco
+    console.log("game ", gameId, " has finished")
 }
 
 const printBoard = (board) => {

@@ -6,11 +6,16 @@
 </head>
 <body>
     <h1>Chess</h1>
-    <button id="btnCreate">New Game</button>
-    <button id="btnJoin">Join Game</button>
+    <div id="lobbyButtons">
+        <button id="btnCreate">New Game</button>
+        <button id="btnJoin">Join Game</button>
+    </div>
     <input type="text" id="joinGameIdTxt"/>
     <div id="divPlayers"></div>
     <div id="divBoard"></div>
+    <div id="gameButtons">
+        <button id="btnQuit">Quit Game</button>
+    </div>
     <script>
         //dichiarazione variabili
         let clientId = null
@@ -19,6 +24,7 @@
         const btnCreate = document.getElementById("btnCreate")
         const btnJoin = document.getElementById("btnJoin")
         const txtJoin = document.getElementById("joinGameIdTxt")
+        const btnQuit = document.getElementById("btnQuit")
         const divPlayers = document.getElementById("divPlayers")
         const divBoard = document.getElementById("divBoard")
 
@@ -38,6 +44,15 @@
                 "gameId": gameId
             }
             ws.send(JSON.stringify(payload)) //invia richiesta
+        })
+
+        btnQuit.addEventListener("click", e => { //click sul bottone abbandona
+            const payload = { //richiesta che verrà mandata
+                "method": "leave",
+                "clientId": clientId,
+                "gameId": gameId
+            }
+            ws.send(JSON.stringify(payload))
         })
 
         ws.onmessage = message => { //quando si ricevono risposte dal server
@@ -70,7 +85,7 @@
                 const txt = document.createElement("p")
                 txt.innerHTML = "Scacchiera della partita " + game.id
                 divBoard.appendChild(txt)
-                for(let i = 0; i < 8; i++){
+                for(let i = 0; i < 3; i++){
                     const c = document.createElement("div")
                     c.id = "casella" + i
                     c.style.backgroundColor = "red"
@@ -106,7 +121,7 @@
                 txtAlert.style.color = "red"
                 txtAlert.innerHTML = leavingPlayer + " ha lasciato la partita"
                 divBoard.appendChild(txtAlert)
-                for(let i = 0; i < 8; i++){
+                for(let i = 0; i < 3; i++){
                     const c = document.createElement("div")
                     c.id = "casella" + i
                     c.style.backgroundColor = "red"
