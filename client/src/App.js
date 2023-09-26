@@ -41,6 +41,10 @@ function App() {
                 setGame(lastJsonMessage.game)
                 setLeavingPlayer(lastJsonMessage.leavingPlayer)
             }
+            if(method === 'draw'){
+                const draw_offer = lastJsonMessage.draw_offer
+                setGame({...game, "draw_offer": draw_offer})
+            }
         }
     }, [lastJsonMessage])
 

@@ -143,6 +143,60 @@ wsServer.on("request", request => { //quando il client manda richieste al socket
             }
             handleQuit(clientId, gameId) //fa uscire il giocatore dalla partita
         }
+        if(result.method === "draw"){
+            const clientId = result.clientId
+            const gameId = result.gameId
+            if(clients[clientId].gameId != gameId){ //se non coincidono, ovvero errore
+                return
+            }
+            const game = games[gameId] //trova la partita
+            if(!game.draw_offer.offering_client){ //se si sta offrendo patta
+                game.draw_offer.offering_client = clientId
+                console.log(clientId, "has offered a draw")
+                const payload = {
+                    "method": "draw",
+                    "draw_offer": game.draw_offer
+                }
+                game.clients.forEach(client => { //invia la risposta ai client
+                    clients[client.clientId].connection.send(JSON.stringify(payload))
+                })
+            } else if(game.draw_offer.offering_client != clientId && !game.draw_offer.receiving_client){ //se si sta accettando patta
+                game.draw_offer.receiving_client = clientId
+                const payload = {
+                    "method": "draw",
+                    "draw_offer": game.draw_offer
+                }
+                game.clients.forEach(client => { //invia la risposta ai client
+                    clients[client.clientId].gameId = null //"libera" gli altri giocatori che ora possono fare altre partite
+                    clients[client.clientId].connection.send(JSON.stringify(payload))
+                })
+                delete games[gameId] //rimuove la partita dall'elenco
+                console.log("game ", gameId, " has finished with a draw")
+            } else {
+                return
+            }
+        }
+        if(result.method === "drawReject"){
+            const clientId = result.clientId
+            const gameId = result.gameId
+            if(clients[clientId].gameId != gameId){ //se non coincidono, ovvero errore
+                return
+            }
+            const game = games[gameId] //trova la partita
+            if(game.draw_offer.offering_client && !game.draw_offer.receiving_client){ //controlla che sia il ricevente
+                game.draw_offer.offering_client = null
+                console.log(clientId, "has rejected a draw")
+                const payload = {
+                    "method": "draw",
+                    "draw_offer": game.draw_offer
+                }
+                game.clients.forEach(client => { //invia la risposta ai client
+                    clients[client.clientId].connection.send(JSON.stringify(payload))
+                })
+            } else {
+                return
+            }
+        }
     })
 
     //quello che succede quando il client si connette
@@ -221,7 +275,7 @@ const generateBoard = () => { //genera i pezzi iniziali
 
 const handleQuit = (clientId, gameId) => {
     const game = games[gameId] //trova la partita
-    console.log(clientId, " left the server with id ", gameId)
+    console.log(clientId, " left the game with id ", gameId)
     const payload = { //risposta da mandare ai client nella partita
         "method": "leave",
         "game": game,
@@ -232,7 +286,7 @@ const handleQuit = (clientId, gameId) => {
         clients[client.clientId].connection.send(JSON.stringify(payload))
     })
     delete games[gameId] //rimuove la partita dall'elenco
-    console.log("server ", gameId, " has finished")
+    console.log("game ", gameId, " has finished")
 }
 
 const printBoard = (board) => {

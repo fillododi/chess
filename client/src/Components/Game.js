@@ -11,7 +11,16 @@ const Game = ({clientId, gameId, game, leavingPlayer, setLeavingPlayer, setShowG
         }
     }, [leavingPlayer])
 
-    const handleQuitButton = () => { //torna alla lobby, quittando la partita se non è finita
+    useEffect(()=>{
+        if(game.draw_offer.receiving_client){
+            setFinishedGame(true)
+            setFinishedGameText('Draw accepted')
+        } else if(game.draw_offer.offering_client) {
+            setFinishedGame(false)
+        }
+    }, [game.draw_offer])
+
+    const handleQuit = () => { //torna alla lobby, quittando la partita se non è finita
         if(!finishedGame){
             const payload = { //richiesta che verrà mandata
                 "method": "leave",
@@ -23,6 +32,23 @@ const Game = ({clientId, gameId, game, leavingPlayer, setLeavingPlayer, setShowG
         setShowGame(false)
         setShowLobby(true)
         setLeavingPlayer(null) //fa in modo che quando si joinnerà il prossimo gioco non esca la schermata di fine gioco
+    }
+
+    const handleDraw = () => { //offri o accetta patta
+        const payload = {
+            "method": "draw",
+            "clientId": clientId,
+            "gameId": gameId
+        }
+        sendJsonMessage(payload)
+    }
+    const handleRejectDraw = () => { //rifiuta patta
+        const payload = {
+            "method": "drawReject",
+            "clientId": clientId,
+            "gameId": gameId
+        }
+        sendJsonMessage(payload)
     }
 
     return <div>
@@ -42,7 +68,19 @@ const Game = ({clientId, gameId, game, leavingPlayer, setLeavingPlayer, setShowG
         }
         <div id='board'>Here goes the board</div>
         <div>
-            <button onClick={handleQuitButton}>{finishedGame? 'Go back to the lobby': 'Quit Game'}</button>
+            <button onClick={handleQuit}>{finishedGame? 'Go back to the lobby': 'Quit Game'}</button>
+            {
+                !finishedGame &&(
+                    game.draw_offer.offering_client && game.draw_offer.offering_client != clientId?
+                        <div>
+                            <button onClick={handleDraw}>Accept Draw Offer</button>
+                            <button onClick={handleRejectDraw}>Reject Draw Offer</button>
+                        </div>
+                        :
+                        <button onClick={handleDraw}>Offer Draw</button>
+                )
+
+            }
         </div>
     </div>
 }
