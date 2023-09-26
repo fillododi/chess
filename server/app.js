@@ -6,10 +6,7 @@ import express from "express"
 const app = express()
 const __dirname = url.fileURLToPath(new URL('.', import.meta.url));
 
-import {Pawn, Rook, Knight, Bishop, King, Queen} from './server/classes.js'
-
-app.get("/", (req, res)=>res.sendFile(__dirname + "./client.html")) //restituisce il file html al client
-app.listen(5001, ()=>console.log("Server listening on port 5001")) //apre la porta 5001 per le richieste all'html
+import {Pawn, Rook, Knight, Bishop, King, Queen} from './lib/classes.js'
 
 httpServer.listen(5000, ()=>{console.log("Server listening on port 5000")}) //apre la porta 5000 per il socket del gioco
 
@@ -78,7 +75,7 @@ wsServer.on("request", request => { //quando il client manda richieste al socket
                 console.log(clientId, " tried to enter game ", gameId, " but it's full")
                 return
             } else if(clients[clientId].gameId) {
-                console.log(clientId, " tried to enter game ", gameId, " but is already playing another game")
+                console.log(clientId, " tried to enter game ", gameId, " but is already playing another server")
                 return
             } else {
                 clients[clientId].gameId = gameId //associa al cliente la partita a cui si sta unendo per evitare che entri anche in altre
@@ -224,7 +221,7 @@ const generateBoard = () => { //genera i pezzi iniziali
 
 const handleQuit = (clientId, gameId) => {
     const game = games[gameId] //trova la partita
-    console.log(clientId, " left the game with id ", gameId)
+    console.log(clientId, " left the server with id ", gameId)
     const payload = { //risposta da mandare ai client nella partita
         "method": "leave",
         "game": game,
@@ -235,7 +232,7 @@ const handleQuit = (clientId, gameId) => {
         clients[client.clientId].connection.send(JSON.stringify(payload))
     })
     delete games[gameId] //rimuove la partita dall'elenco
-    console.log("game ", gameId, " has finished")
+    console.log("server ", gameId, " has finished")
 }
 
 const printBoard = (board) => {
