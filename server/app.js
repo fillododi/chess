@@ -127,7 +127,8 @@ wsServer.on("request", request => { //quando il client manda richieste al socket
                             "draw_offer": game.draw_offer,
                             "turn": game.turn,
                             "board": boardToSend,
-                            "history": game.history
+                            "history": game.history,
+                            "chat": game.chat
                         }
                     }
                     game.clients.forEach(client => { //invia la risposta a tutti i client associati alla partita

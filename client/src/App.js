@@ -48,6 +48,9 @@ function App() {
             if(method === 'chat'){
                 setGame({...game, "chat": lastJsonMessage.chat})
             }
+            if(method === 'start'){
+                setGame(lastJsonMessage.game)
+            }
         }
     }, [lastJsonMessage])
 

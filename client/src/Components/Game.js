@@ -67,7 +67,10 @@ const Game = ({clientId, gameId, game, leavingPlayer, setLeavingPlayer, setShowG
                 <h1 style={{'color':"red"}}>The game has finished! {finishedGameText}</h1>
             </div>
         }
-        <div id='board'>Here goes the board</div>
+        <div id='board'>{game.board.map((piece) => {
+                return <p>{piece.color} {piece.type} on {piece.column.toUpperCase()}{piece.row}</p>
+            })}
+        </div>
         <div>
             <button onClick={handleQuit}>{finishedGame? 'Go back to the lobby': 'Quit Game'}</button>
             {
