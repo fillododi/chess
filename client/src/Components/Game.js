@@ -6,7 +6,7 @@ const Game = ({clientId, gameId, game, leavingPlayer, setLeavingPlayer, setShowG
     const [finishedGameText, setFinishedGameText] = useState('')
 
     useEffect(()=>{ //aggiorna la partita quando esce un giocatore
-        if(leavingPlayer && leavingPlayer !=clientId){ //la seconda condizione serve perché altrimenti chi abbandona il gioco quando ne joinna altri ha la schermata di chi ha abbandonato
+        if(leavingPlayer && leavingPlayer != clientId){ //la seconda condizione serve perché altrimenti chi abbandona il gioco quando ne joinna altri ha la schermata di chi ha abbandonato
             setFinishedGame(true)
             setFinishedGameText(`${leavingPlayer} left the game`)
         }
@@ -52,41 +52,56 @@ const Game = ({clientId, gameId, game, leavingPlayer, setLeavingPlayer, setShowG
         sendJsonMessage(payload)
     }
 
-    return <div>
-        <h1>Game {gameId}</h1>
+    return <div className={'flex flex-col gap-y-8 p-8'}>
+        <h1 className={'text-2xl'}>Your match has gameid:<br/><span className={'font-semibold text-blue-600'}>{gameId}</span><br/>Share it with your friends!</h1>
         {!finishedGame?
-            <div style={{'display': "flex", "justify-content": "center"}}>
-                {game.clients.map(client =>
-                    <div style={{'width': '200px', "border": "1px solid black"}}>
-                        <p>Connected client: {client.clientId}</p>
-                    </div>
-                )}
+            <div className={'flex flex-col gap-y-2'}>
+                <h3 className={'text-lg'}>Connected players:</h3>
+                <div className={"flex flex-row gap-x-2 justify-evenly"}>
+                    {game.clients.map(client =>
+                        <div className={'border-2 border-gray-800 border-dashed p-4'}>
+                            <p>{client.clientId}</p>
+                            <p>{client.color}</p>
+                        </div>
+                    )}
+                </div>
             </div>
             :
             <div>
                 <h1 style={{'color':"red"}}>The game has finished! {finishedGameText}</h1>
             </div>
         }
-        <div id='board'>{game.board.map((piece) => {
-                return <p>{piece.color} {piece.type} on {piece.column.toUpperCase()}{piece.row}</p>
-            })}
-        </div>
-        <div>
-            <button onClick={handleQuit}>{finishedGame? 'Go back to the lobby': 'Quit Game'}</button>
-            {
-                !finishedGame &&(
-                    game.draw_offer.offering_client && game.draw_offer.offering_client != clientId?
-                        <div>
-                            <button onClick={handleDraw}>Accept Draw Offer</button>
-                            <button onClick={handleRejectDraw}>Reject Draw Offer</button>
-                        </div>
-                        :
-                        <button onClick={handleDraw}>Offer Draw</button>
-                )
+        <div className={'flex flex-row justify-evenly'}>
+            <div className={'flex flex-col gap-y-4'}>
+                <div id='board' className={'border-2 border-black grid grid-cols-3 gap-2'}>{game.board.map((piece) => {
+                        return <p>{piece.color} {piece.type} on {piece.column.toUpperCase()}{piece.row}</p>
+                    })}
+                </div>
+                <div className={'flex flex-row gap-x-4'}>
+                    <button className={'border-blue-600 border-2 rounded-md p-2 hover:bg-blue-600 hover:text-white'}
+                            onClick={handleQuit}>{finishedGame? 'Go back to the lobby': 'Quit Game'}</button>
+                    {
+                        !finishedGame &&(
+                            game.draw_offer.offering_client && game.draw_offer.offering_client != clientId?
+                                <div>
+                                    <button className={'border-blue-600 border-2 rounded-md p-2 hover:bg-blue-600 hover:text-white'} onClick={handleDraw}>
+                                        Accept Draw Offer
+                                    </button>
+                                    <button className={'border-blue-600 border-2 rounded-md p-2 hover:bg-blue-600 hover:text-white'} onClick={handleRejectDraw}>
+                                        Reject Draw Offer
+                                    </button>
+                                </div>
+                                :
+                                <button className={'border-blue-600 border-2 rounded-md p-2 hover:bg-blue-600 hover:text-white'} onClick={handleDraw}>
+                                    Offer Draw
+                                </button>
+                        )
 
-            }
+                    }
+                </div>
+            </div>
+            <Chat clientId={clientId} gameId={gameId} sendJsonMessage={sendJsonMessage} chat={game.chat}/>
         </div>
-        <Chat clientId={clientId} gameId={gameId} sendJsonMessage={sendJsonMessage} chat={game.chat}/>
     </div>
 }
 
