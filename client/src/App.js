@@ -45,6 +45,9 @@ function App() {
                 const draw_offer = lastJsonMessage.draw_offer
                 setGame({...game, "draw_offer": draw_offer})
             }
+            if(method === 'chat'){
+                setGame({...game, "chat": lastJsonMessage.chat})
+            }
         }
     }, [lastJsonMessage])
 

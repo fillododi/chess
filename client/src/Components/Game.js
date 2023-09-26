@@ -1,4 +1,5 @@
 import React, {useEffect, useState} from "react";
+import Chat from "./Chat";
 
 const Game = ({clientId, gameId, game, leavingPlayer, setLeavingPlayer, setShowGame, setShowLobby, sendJsonMessage}) => {
     const [finishedGame, setFinishedGame] = useState(false)
@@ -82,6 +83,7 @@ const Game = ({clientId, gameId, game, leavingPlayer, setLeavingPlayer, setShowG
 
             }
         </div>
+        <Chat clientId={clientId} gameId={gameId} sendJsonMessage={sendJsonMessage} chat={game.chat}/>
     </div>
 }
 

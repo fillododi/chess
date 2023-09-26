@@ -56,7 +56,8 @@ wsServer.on("request", request => { //quando il client manda richieste al socket
                     },
                     "turn": null,
                     "board": [],
-                    "history": []
+                    "history": [],
+                    "chat": []
                 }
                 const payload = { //risposta che verrà data con all'interno l'id della partita
                     "method": "create",
@@ -196,6 +197,27 @@ wsServer.on("request", request => { //quando il client manda richieste al socket
             } else {
                 return
             }
+        }
+        if(result.method === 'chat'){ //invia chat
+            const clientId = result.clientId
+            const gameId = result.gameId
+            const message = result.message
+            if(clients[clientId].gameId != gameId){ //se non coincidono, ovvero errore
+                return
+            }
+            const game = games[gameId] //trova la partita
+            game.chat.push({ //aggiunge il messaggio alla partita
+                'clientId': clientId,
+                'message': message
+            })
+            console.log('game', gameId, '-', clientId, '-', message)
+            const payload = {
+                'method': 'chat',
+                'chat': game.chat
+            }
+            game.clients.forEach(client => { //invia la risposta ai client
+                clients[client.clientId].connection.send(JSON.stringify(payload))
+            })
         }
     })
 
