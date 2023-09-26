@@ -19,7 +19,7 @@ function App() {
     const [game, setGame] = useState(null)
     const [leavingPlayer, setLeavingPlayer] = useState(null)
 
-    //quando si ricevono messaggi dal lib
+    //quando si ricevono messaggi dal server
     useEffect(()=>{
         if(lastJsonMessage){
             const method = lastJsonMessage.method
