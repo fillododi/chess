@@ -18,7 +18,7 @@ const Lobby = ({clientId, gameId, setGameId, sendJsonMessage}) => {
             }}>New Game</button>
         </div>
         <div className={'flex flex-row justify-center'}>
-            <input type="text" className={'border-gray-400 border-l-2 border-y-2'} onChange={handleGameIdChange}/>
+            <input type="text" className={'border-gray-400 border-l-2 border-y-2'} onChange={handleGameIdChange} value={gameId}/>
             <button className={'border-blue-600 border-2 rounded-br-md rounded-tr-md p-2 hover:bg-blue-600 hover:text-white'} onClick={()=>{
                 const payload = { //richiesta che verrà mandata
                     "method": "join",

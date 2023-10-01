@@ -1,9 +1,12 @@
 import React, {useEffect, useState} from "react";
 import Chat from "./Chat";
+import Board from "./Board";
 
 const Game = ({clientId, gameId, game, leavingPlayer, setLeavingPlayer, setShowGame, setShowLobby, sendJsonMessage}) => {
     const [finishedGame, setFinishedGame] = useState(false)
     const [finishedGameText, setFinishedGameText] = useState('')
+    const [isActivePlayer, setIsActivePlayer] = useState(false)
+    const [playerColor, setPlayerColor] = useState('')
 
     useEffect(()=>{ //aggiorna la partita quando esce un giocatore
         if(leavingPlayer && leavingPlayer != clientId){ //la seconda condizione serve perché altrimenti chi abbandona il gioco quando ne joinna altri ha la schermata di chi ha abbandonato
@@ -20,6 +23,15 @@ const Game = ({clientId, gameId, game, leavingPlayer, setLeavingPlayer, setShowG
             setFinishedGame(false)
         }
     }, [game.draw_offer])
+
+    useEffect(()=>{
+        if(game.active_player){
+            setIsActivePlayer(game.active_player.clientId === clientId)
+        }
+        if(game.clients){
+            setPlayerColor(game.clients.find(client => client.clientId === clientId).color)
+        }
+    }, [game])
 
     const handleQuit = () => { //torna alla lobby, quittando la partita se non è finita
         if(!finishedGame){
@@ -65,6 +77,8 @@ const Game = ({clientId, gameId, game, leavingPlayer, setLeavingPlayer, setShowG
                         </div>
                     )}
                 </div>
+                {playerColor && <h4 className={'text-md text-blue-600'}>You are {playerColor}</h4>}
+                {isActivePlayer && <h4 className={'text-md text-blue-600'}>It's your turn</h4>}
             </div>
             :
             <div>
@@ -73,10 +87,7 @@ const Game = ({clientId, gameId, game, leavingPlayer, setLeavingPlayer, setShowG
         }
         <div className={'flex flex-row justify-evenly'}>
             <div className={'flex flex-col gap-y-4'}>
-                <div id='board' className={'border-2 border-black grid grid-cols-3 gap-2'}>{game.board.map((piece) => {
-                        return <p>{piece.color} {piece.type} on {piece.column.toUpperCase()}{piece.row}</p>
-                    })}
-                </div>
+                <Board game={game} playerColor={playerColor} isActivePlayer={isActivePlayer} sendJsonMessage={sendJsonMessage}/>
                 <div className={'flex flex-row gap-x-4'}>
                     <button className={'border-blue-600 border-2 rounded-md p-2 hover:bg-blue-600 hover:text-white'}
                             onClick={handleQuit}>{finishedGame? 'Go back to the lobby': 'Quit Game'}</button>

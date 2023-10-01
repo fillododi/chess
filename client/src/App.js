@@ -50,6 +50,9 @@ function App() {
             if(method === 'start'){
                 setGame(lastJsonMessage.game)
             }
+            if(method === 'move'){
+                setGame(lastJsonMessage.game)
+            }
         }
     }, [lastJsonMessage])
 
@@ -70,7 +73,7 @@ function App() {
             <div className={'absolute top-8 right-8 p-2 border-dashed border-gray-800 border-2'}>
                 <p>Your client id is {clientId}</p>
             </div>
-            <div className={'max-w-6xl mx-auto border-gray-800 border-2 flex flex-col'}>
+            <div className={'max-w-8xl mx-auto border-gray-800 border-2 flex flex-col'}>
                 {showLobby && <Lobby clientId={clientId} gameId={gameId} setGameId={setGameId} sendJsonMessage={sendJsonMessage}/>}
                 {showGame && <Game clientId={clientId} gameId={gameId} game={game} leavingPlayer={leavingPlayer} setLeavingPlayer={setLeavingPlayer}
                                setShowGame={setShowGame} setShowLobby={setShowLobby} sendJsonMessage={sendJsonMessage}/>}
