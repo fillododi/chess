@@ -225,18 +225,20 @@ wsServer.on("request", request => { //quando il client manda richieste al socket
                 const prevCol = result.move.prevPosition.column
                 const pieceType = result.move.piece.type
                 const pieceColor = result.move.piece.color
-                const selectedPiece = game.board.findPieceByPosition(prevRow, prevCol)
+                const selectedPiece = game.board.findPieceByRowCol(prevRow, prevCol)
                 if(selectedPiece.getType() === pieceType && selectedPiece.getColor() === pieceColor && pieceColor === playerColor){ //controlla che il pezzo selezionato sia quello trovato (altrimenti è un errore)
                     const newRow = result.move.nextPosition.row
                     const newCol = result.move.nextPosition.column
-                    const success = selectedPiece.move(newRow, newCol) //la funziona ritorna true se il pezzo si è riuscito a muovere
+                    const newSquare = game.board.findSquare(newRow, newCol)
+                    console.log('he wants to move his', pieceType, 'on', newSquare)
+                    const success = selectedPiece.move(newSquare) //la funziona ritorna true se il pezzo si è riuscito a muovere
                     if(success){
                         game.history.push(result.move) //aggiunge la mossa allo storico
                         if(game.active_player.color === 'black'){
                             game.turn += 1 //aumenta il numero del turno se ha mosso il nero
                             console.log("It's now turn", game.turn)
                         }
-                        console.log(game.active_player.color, "moved his", pieceType)
+                        console.log(game.active_player.color, "moved his", pieceType, "to", newCol, newRow)
                         game.board.print()
                         game.active_player = game.clients.find(client => client != game.active_player) //passa il turno
                         const alphabet = "abcdefgh"

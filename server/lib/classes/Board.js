@@ -1,33 +1,71 @@
 import {King, Knight, Pawn, Queen, Rook, Bishop} from "./Pieces.js";
+import {Square} from "./Square.js";
 
 
 export class Board {
     constructor(){
         this.pieceList = []
+        this.squares = []
         const alphabet = "abcdefgh"
-        for(let i = 0; i < 8; i++){
-            this.addPiece('pawn', 'white', 2, alphabet[i].toString())
-            this.addPiece('pawn', 'black', 7, alphabet[i].toString())
+        for(let i = 1; i <= 8; i++){
+            for(let j = 0; j < 8; j++){
+                this.addSquare(i, alphabet[j].toString())
+            }
         }
-        this.addPiece('rook', 'white', '1', 'a')
-        this.addPiece('rook', 'white', '1', 'h')
-        this.addPiece('rook', 'black', '8', 'a')
-        this.addPiece('rook', 'black', '8', 'h')
-        this.addPiece('knight', 'white', '1', 'b')
-        this.addPiece('knight', 'white', '1', 'g')
-        this.addPiece('knight', 'black', '8', 'b')
-        this.addPiece('knight', 'black', '8', 'g')
-        this.addPiece('bishop', 'white', '1', 'c')
-        this.addPiece('bishop', 'white', '1', 'f')
-        this.addPiece('bishop', 'black', '8', 'c')
-        this.addPiece('bishop', 'black', '8', 'f')
-        this.addPiece('queen', 'white', '1', 'd')
-        this.addPiece('king', 'white', '1', 'e')
-        this.addPiece('queen', 'black', '8', 'd')
-        this.addPiece('king', 'black', '8', 'e')
+        this.getSquares().map(square => {
+            if(square.getRow() === 2){
+                this.addPiece('pawn', 'white', square)
+            }
+            if(square.getRow() === 7){
+                this.addPiece('pawn', 'black', square)
+            }
+            if(square.getRow() === 1){
+                if(square.getColumn() === 'a' || square.getColumn() === 'h'){
+                    this.addPiece('rook', 'white', square)
+                }
+                if(square.getColumn() === 'b' || square.getColumn() === 'g'){
+                    this.addPiece('knight', 'white', square)
+                }
+                if(square.getColumn() === 'c' || square.getColumn() === 'f'){
+                    this.addPiece('bishop', 'white', square)
+                }
+                if(square.getColumn() === 'd'){
+                    this.addPiece('queen', 'white', square)
+                }
+                if(square.getColumn() === 'e'){
+                    this.addPiece('king', 'white', square)
+                }
+            }
+            if(square.getRow() === 8){
+                if(square.getColumn() === 'a' || square.getColumn() === 'h'){
+                    this.addPiece('rook', 'black', square)
+                }
+                if(square.getColumn() === 'b' || square.getColumn() === 'g'){
+                    this.addPiece('knight', 'black', square)
+                }
+                if(square.getColumn() === 'c' || square.getColumn() === 'f'){
+                    this.addPiece('bishop', 'black', square)
+                }
+                if(square.getColumn() === 'd'){
+                    this.addPiece('queen', 'black', square)
+                }
+                if(square.getColumn() === 'e'){
+                    this.addPiece('king', 'black', square)
+                }
+            }
+        })
     }
 
-    addPiece(type, color, row, column){
+    getSquares(){
+        return this.squares
+    }
+
+    addSquare(row, column){
+        const s = new Square(row, column, this)
+        this.squares.push(s)
+    }
+
+    addPiece(type, color, square){
         const pieceConstructors = { //per mappare stringa tipo e nome classe da istanziare
             'pawn': Pawn,
             'rook': Rook,
@@ -37,12 +75,22 @@ export class Board {
             'king': King
         }
         const pieceConstructor = pieceConstructors[type]
-        const p = new pieceConstructor(color, row, column)
+        const p = new pieceConstructor(color, square)
         this.pieceList.push(p)
     }
 
-    findPieceByPosition(row, column){
-        const piece = this.pieceList.find((piece) => piece.checkPosition(row, column))
+    findPiece(square){
+        const piece = this.pieceList.find((piece) => piece.getSquare() === square)
+        return piece
+    }
+    findSquare(row, col){
+        const square = this.squares.find((square) => square.getColumn() === col.toLowerCase() && square.getRow() == row)
+        return square
+    }
+
+    findPieceByRowCol(row, col){
+        const square = this.findSquare(row, col)
+        const piece = this.findPiece(square)
         return piece
     }
 
@@ -55,8 +103,8 @@ export class Board {
         const data = this.pieceList.map(piece => {return { //sostituisce numeri colonne con lettere
             "color": piece.color,
             "type": piece.type,
-            "column": alphabet[piece.col - 1],
-            "row": piece.row
+            "column": piece.getSquare().getColumn(),
+            "row": piece.getSquare().getRow()
         }})
         return data
     }
