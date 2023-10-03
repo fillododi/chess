@@ -120,7 +120,10 @@ export class Board {
 
     changeBoard(newPieceList){
         this.pieceList.forEach(piece => this.killPiece(piece)) //rimuove i pezzi attuali
-        newPieceList.forEach(piece => this.addPiece(piece.getType(), piece.getColor(), piece.getSquare()))
+        newPieceList.forEach(piece => {
+            const pieceSquare = this.findSquare(piece.getSquare().getRow(), piece.getSquare().getColumn())
+            this.addPiece(piece.getType(), piece.getColor(), pieceSquare)
+        })
     }
 
     getPlayerColorUnderCheck(){

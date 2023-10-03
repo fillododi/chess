@@ -35,7 +35,7 @@ class Piece {
                 const oldCol = oldSquare.getColumn()
                 const newRow = square.getRow()
                 const newCol = square.getColumn()
-                virtualBoard.changeBoard(oldSquare.getBoard().getpieceList()) //copia questa scacchiera nella nuova
+                virtualBoard.changeBoard(oldSquare.getBoard().getpieceList())//copia questa scacchiera nella nuova
                 const virtualPiece = virtualBoard.findPieceByRowCol(oldRow, oldCol) //questo pezzo nella nuova scacchiera
                 const virtualNewSquare = virtualBoard.findSquare(newRow, newCol) //il pezzo a cui si deve spostare nella nuova scacchiera
                 virtualPiece.handleMove(virtualNewSquare) //muove il pezzo nella nuova scacchiera (handleMove per non controllare gli scacchi prima di muovere)
@@ -281,13 +281,13 @@ export class Knight extends Piece{
             const square2Ups = squareUp.getSquareUp()
             if(square2Ups){
                 if(square2Ups.getSquareLeft()){
-                    const piece = square2Ups.getSquareLeft.getPiece()
+                    const piece = square2Ups.getSquareLeft().getPiece()
                     if(!piece || piece.getColor() != this.color){
                         possibleMoves.push(square2Ups.getSquareLeft())
                     }
                 }
                 if(square2Ups.getSquareRight()){
-                    const piece = square2Ups.getSquareRight.getPiece()
+                    const piece = square2Ups.getSquareRight().getPiece()
                     if(!piece || piece.getColor() != this.color){
                         possibleMoves.push(square2Ups.getSquareRight())
                     }
@@ -315,13 +315,13 @@ export class Knight extends Piece{
             const square2Downs = squareDown.getSquareDown()
             if(square2Downs){
                 if(square2Downs.getSquareLeft()){
-                    const piece = square2Downs.getSquareLeft.getPiece()
+                    const piece = square2Downs.getSquareLeft().getPiece()
                     if(!piece || piece.getColor() != this.color){
                         possibleMoves.push(square2Downs.getSquareLeft())
                     }
                 }
                 if(square2Downs.getSquareRight()){
-                    const piece = square2Downs.getSquareRight.getPiece()
+                    const piece = square2Downs.getSquareRight().getPiece()
                     if(!piece || piece.getColor() != this.color){
                         possibleMoves.push(square2Downs.getSquareRight())
                     }
