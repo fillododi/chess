@@ -10,6 +10,10 @@ export class Square {
         return alphabet[this.col - 1]
     }
 
+    getPiece(){
+        return this.board.findPiece(this)
+    }
+
     getRow(){
         return this.row
     }
@@ -44,7 +48,7 @@ export class Square {
         const newCol = this.col - 1
         const alphabet = "abcdefgh"
         const newColLetter = alphabet[newCol - 1]
-        return this.board.findSquare(this.getRow() + 1, newColLetter)
+        return this.board.findSquare(this.getRow(), newColLetter)
     }
     getSquareRight(){
         if(this.getColumn() === 'h'){
@@ -53,7 +57,7 @@ export class Square {
         const newCol = this.col + 1
         const alphabet = "abcdefgh"
         const newColLetter = alphabet[newCol - 1]
-        return this.board.findSquare(this.getRow() + 1, newColLetter)
+        return this.board.findSquare(this.getRow(), newColLetter)
     }
     getSquareUpRight(){
         if(this.getSquareUp()){

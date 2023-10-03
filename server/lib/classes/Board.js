@@ -94,6 +94,11 @@ export class Board {
         return piece
     }
 
+    killPiece(piece){
+        const newPieceList = this.pieceList.filter(p => p != piece)
+        this.pieceList = newPieceList
+    }
+
     print(){
         this.pieceList.forEach(piece => piece.print())
     }

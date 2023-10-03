@@ -230,15 +230,15 @@ wsServer.on("request", request => { //quando il client manda richieste al socket
                     const newRow = result.move.nextPosition.row
                     const newCol = result.move.nextPosition.column
                     const newSquare = game.board.findSquare(newRow, newCol)
-                    console.log('he wants to move his', pieceType, 'on', newSquare)
+                    console.log('he wants to move his', pieceType, 'on', newSquare.getPosition())
                     const success = selectedPiece.move(newSquare) //la funziona ritorna true se il pezzo si è riuscito a muovere
                     if(success){
+                        console.log(game.active_player.color, "moved his", pieceType, "to", newCol, newRow)
                         game.history.push(result.move) //aggiunge la mossa allo storico
                         if(game.active_player.color === 'black'){
                             game.turn += 1 //aumenta il numero del turno se ha mosso il nero
                             console.log("It's now turn", game.turn)
                         }
-                        console.log(game.active_player.color, "moved his", pieceType, "to", newCol, newRow)
                         game.board.print()
                         game.active_player = game.clients.find(client => client != game.active_player) //passa il turno
                         const alphabet = "abcdefgh"
@@ -285,7 +285,16 @@ const handleQuit = (clientId, gameId) => {
     console.log(clientId, " left the game with id ", gameId)
     const payload = { //risposta da mandare ai client nella partita
         "method": "leave",
-        "game": game,
+        "game": {
+            "id": gameId,
+            "clients": game.clients,
+            "active_player": game.active_player,
+            "draw_offer": game.draw_offer,
+            "turn": game.turn,
+            "board": game.board.json(),
+            "history": game.history,
+            "chat": game.chat
+        },
         "leavingPlayer": clientId
     }
     game.clients.forEach(client => { //invia la risposta ai client
