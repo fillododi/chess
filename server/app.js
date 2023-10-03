@@ -283,19 +283,37 @@ wsServer.on("request", request => { //quando il client manda richieste al socket
 const handleQuit = (clientId, gameId) => {
     const game = games[gameId] //trova la partita
     console.log(clientId, " left the game with id ", gameId)
-    const payload = { //risposta da mandare ai client nella partita
-        "method": "leave",
-        "game": {
-            "id": gameId,
-            "clients": game.clients,
-            "active_player": game.active_player,
-            "draw_offer": game.draw_offer,
-            "turn": game.turn,
-            "board": game.board.json(),
-            "history": game.history,
-            "chat": game.chat
-        },
-        "leavingPlayer": clientId
+    let payload = {}
+    if(game.board === []){
+        payload = {
+            "method": "leave",
+            "game": {
+                "id": gameId,
+                "clients": game.clients,
+                "active_player": game.active_player,
+                "draw_offer": game.draw_offer,
+                "turn": game.turn,
+                "board": [],
+                "history": game.history,
+                "chat": game.chat
+            },
+            "leavingPlayer": clientId
+        }
+    } else {
+        payload = { //risposta da mandare ai client nella partita
+            "method": "leave",
+            "game": {
+                "id": gameId,
+                "clients": game.clients,
+                "active_player": game.active_player,
+                "draw_offer": game.draw_offer,
+                "turn": game.turn,
+                "board": game.board.json(),
+                "history": game.history,
+                "chat": game.chat
+            },
+            "leavingPlayer": clientId
+        }
     }
     game.clients.forEach(client => { //invia la risposta ai client
         clients[client.clientId].gameId = null //"libera" gli altri giocatori che ora possono fare altre partite
