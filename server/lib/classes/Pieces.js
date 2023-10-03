@@ -249,6 +249,79 @@ export class Knight extends Piece{
         super(color, square)
         this.type = "knight"
     }
+
+    getPossibleMoves() {
+        let possibleMoves = []
+        const squareUp = this.square.getSquareUp()
+        if(squareUp){
+            const square2Ups = squareUp.getSquareUp()
+            if(square2Ups){
+                if(square2Ups.getSquareLeft()){
+                    const piece = square2Ups.getSquareLeft.getPiece()
+                    if(!piece || piece.getColor() != this.color){
+                        possibleMoves.push(square2Ups.getSquareLeft())
+                    }
+                }
+                if(square2Ups.getSquareRight()){
+                    const piece = square2Ups.getSquareRight.getPiece()
+                    if(!piece || piece.getColor() != this.color){
+                        possibleMoves.push(square2Ups.getSquareRight())
+                    }
+                }
+            }
+            if(squareUp.getSquareLeft()){
+                if (squareUp.getSquareLeft().getSquareLeft()){
+                    const piece = squareUp.getSquareLeft().getSquareLeft().getPiece()
+                    if(!piece || piece.getColor() != this.color){
+                        possibleMoves.push(squareUp.getSquareLeft().getSquareLeft())
+                    }
+                }
+            }
+            if(squareUp.getSquareRight()){
+                if (squareUp.getSquareRight().getSquareRight()){
+                    const piece = squareUp.getSquareRight().getSquareRight().getPiece()
+                    if(!piece || piece.getColor() != this.color){
+                        possibleMoves.push(squareUp.getSquareRight().getSquareRight())
+                    }
+                }
+            }
+        }
+        const squareDown = this.square.getSquareDown()
+        if(squareDown){
+            const square2Downs = squareDown.getSquareDown()
+            if(square2Downs){
+                if(square2Downs.getSquareLeft()){
+                    const piece = square2Downs.getSquareLeft.getPiece()
+                    if(!piece || piece.getColor() != this.color){
+                        possibleMoves.push(square2Downs.getSquareLeft())
+                    }
+                }
+                if(square2Downs.getSquareRight()){
+                    const piece = square2Downs.getSquareRight.getPiece()
+                    if(!piece || piece.getColor() != this.color){
+                        possibleMoves.push(square2Downs.getSquareRight())
+                    }
+                }
+            }
+            if(squareDown.getSquareLeft()){
+                if (squareDown.getSquareLeft().getSquareLeft()){
+                    const piece = squareDown.getSquareLeft().getSquareLeft().getPiece()
+                    if(!piece || piece.getColor() != this.color){
+                        possibleMoves.push(squareDown.getSquareLeft().getSquareLeft())
+                    }
+                }
+            }
+            if(squareDown.getSquareRight()){
+                if (squareDown.getSquareRight().getSquareRight()){
+                    const piece = squareDown.getSquareRight().getSquareRight().getPiece()
+                    if(!piece || piece.getColor() != this.color){
+                        possibleMoves.push(squareDown.getSquareRight().getSquareRight())
+                    }
+                }
+            }
+        }
+        return possibleMoves
+    }
 }
 
 export class King extends Piece{
