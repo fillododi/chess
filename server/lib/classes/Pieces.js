@@ -256,6 +256,67 @@ export class King extends Piece{
         super(color, square)
         this.type = "king"
     }
+
+    getPossibleMoves() {
+        let possibleMoves = []
+        const squareUp = this.square.getSquareUp()
+        if(squareUp){
+            let pieceOnSquareUp = squareUp.getPiece()
+            if(pieceOnSquareUp && pieceOnSquareUp.color != this.color){
+                possibleMoves.push(squareUp)
+            }
+        }
+        const squareUpRight = this.square.getSquareUpRight()
+        if(squareUpRight){
+            let pieceOnSquareUpRight = squareUpRight.getPiece()
+            if(pieceOnSquareUpRight && pieceOnSquareUpRight.color != this.color){
+                possibleMoves.push(squareUpRight)
+            }
+        }
+        const squareRight = this.square.getSquareRight()
+        if(squareRight){
+            let pieceOnSquareRight = squareRight.getPiece()
+            if(pieceOnSquareRight && pieceOnSquareRight.color != this.color){
+                possibleMoves.push(squareRight)
+            }
+        }
+        const squareDownRight = this.square.getSquareDownRight()
+        if(squareDownRight){
+            let pieceOnSquareDownRight = squareDownRight.getPiece()
+            if(pieceOnSquareDownRight && pieceOnSquareDownRight.color != this.color){
+                possibleMoves.push(squareDownRight)
+            }
+        }
+        const squareDown = this.square.getSquareDown()
+        if(squareDown){
+            let pieceOnSquareDown = squareDown.getPiece()
+            if(pieceOnSquareDown && pieceOnSquareDown.color != this.color){
+                possibleMoves.push(squareDown)
+            }
+        }
+        const squareDownLeft = this.square.getSquareDownLeft()
+        if(squareDownLeft){
+            let pieceOnSquareDownLeft = squareDownLeft.getPiece()
+            if(pieceOnSquareDownLeft && pieceOnSquareDownLeft.color != this.color){
+                possibleMoves.push(squareDownLeft)
+            }
+        }
+        const squareLeft = this.square.getSquareLeft()
+        if(squareLeft){
+            let pieceOnSquareLeft = squareLeft.getPiece()
+            if(pieceOnSquareLeft && pieceOnSquareLeft.color != this.color){
+                possibleMoves.push(squareLeft)
+            }
+        }
+        const squareUpLeft = this.square.getSquareUpLeft()
+        if(squareUpLeft){
+            let pieceOnSquareUpLeft = squareUpLeft.getPiece()
+            if(pieceOnSquareUpLeft && pieceOnSquareUpLeft.color != this.color){
+                possibleMoves.push(squareUpLeft)
+            }
+        }
+        return possibleMoves
+    }
 }
 
 export class Queen extends Piece{
