@@ -1,7 +1,7 @@
 import React, {useState} from "react";
 import {FaRegChessPawn, FaChessPawn, FaDiceFive} from "react-icons/fa6";
 
-const Lobby = ({clientId, gameId, setGameId, sendJsonMessage}) => {
+const Lobby = ({clientId, gameId, setGameId, sendJsonMessage, games}) => {
 
     const [selectedColor, setSelectedColor] = useState('random')
     const handleGameIdChange = (e) => {
@@ -47,6 +47,36 @@ const Lobby = ({clientId, gameId, setGameId, sendJsonMessage}) => {
                 sendJsonMessage(payload) //invia richiesta
             }
             }>Join Game</button>
+        </div>
+        <h4 className='text-xl'>or <span className={'text-blue-600 text-bold'}>Choose a game from the list</span> </h4>
+        <div className={'grid grid-cols-3'}>
+            {games.map(game => {
+                const opponentColor = game.client.color
+                let playerColor
+                if(opponentColor === 'white'){
+                    playerColor = 'black'
+                }
+                if(opponentColor === 'black'){
+                    playerColor = 'white'
+                }
+                if(opponentColor === 'random'){
+                    playerColor = 'random'
+                }
+                return <div className={'border-blue-600 border-2 flex flex-col justify-center p-4 gap-y-2'}>
+                    <p>Game: {game.gameId}</p>
+                    <p>Opponent: {game.client.clientId}</p>
+                    <p>You will play as {playerColor}</p>
+                    <button className={'border-blue-600 border-2 rounded-md p-2 hover:bg-blue-600 hover:text-white'} onClick={()=>{
+                        const payload = { //richiesta che verrà mandata
+                            "method": "join",
+                            "clientId": clientId,
+                            "gameId": game.gameId
+                        }
+                        console.log(payload)
+                        sendJsonMessage(payload) //invia richiesta
+                    }}>Join Game</button>
+                </div>
+            })}
         </div>
     </div>
 }

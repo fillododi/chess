@@ -279,6 +279,26 @@ wsServer.on("request", request => { //quando il client manda richieste al socket
                 }
             }
         }
+        if(result.method === 'getGames'){
+            const clientId = result.clientId
+            if(clientId){
+                const gameList = Object.keys(games).map(gameId => {
+                    const game = games[gameId]
+                    if(game.clients.length === 1) {
+                        const clientInGame = game.clients[0]
+                        return {
+                            "gameId": gameId,
+                            "client": clientInGame
+                        }
+                    }
+                })
+                const payload = { //risposta che viene data al client al momento della connessione: qui vanno mandati i dati dell'utente non di gioco che serviranno al browser
+                    "method": "getGames",
+                    "games": gameList
+                }
+                connection.send(JSON.stringify(payload))
+            }
+        }
     })
 
     //quello che succede quando il client si connette
@@ -289,9 +309,20 @@ wsServer.on("request", request => { //quando il client manda richieste al socket
         "id": clientId, //id del client
         "gameId": null //id della partita a cui sta giocando il client
     }
+    const gameList = Object.keys(games).map(gameId => {
+        const game = games[gameId]
+        if(game.clients.length === 1) {
+            const clientInGame = game.clients[0]
+            return {
+                "gameId": gameId,
+                "client": clientInGame
+            }
+        }
+    })
     const payload = { //risposta che viene data al client al momento della connessione: qui vanno mandati i dati dell'utente non di gioco che serviranno al browser
         "method": "connect",
-        "clientId": clientId
+        "clientId": clientId,
+        "games": gameList
     }
     connection.send(JSON.stringify(payload)) //invia la risposta al client quando esso si connette
 })

@@ -17,6 +17,7 @@ function App() {
     const [gameId, setGameId] = useState(null)
     const [game, setGame] = useState(null)
     const [leavingPlayer, setLeavingPlayer] = useState(null)
+    const [games, setGames] = useState([])
 
     //quando si ricevono messaggi dal server
     useEffect(()=>{
@@ -24,6 +25,7 @@ function App() {
             const method = lastJsonMessage.method
             if(method === 'connect'){ //messaggio che arriva quando il client si connette, ottenendo il client id
                 setClientId(lastJsonMessage.clientId)
+                setGames(lastJsonMessage.games)
                 console.log('connected')
             }
             if(method === 'join'){
@@ -49,8 +51,18 @@ function App() {
             if(method === 'move'){
                 setGame(lastJsonMessage.game)
             }
+            if(method === 'getGames'){
+                setGames(lastJsonMessage.games)
+            }
         }
     }, [lastJsonMessage])
+
+    useEffect(()=>{ //aggiorna la lista dei giochi
+        sendJsonMessage({
+            'method': 'getGames',
+            'clientId': clientId
+        })
+    }, [showLobby, games])
 
     return (
         <div className="App">
@@ -59,7 +71,7 @@ function App() {
                 <p>Your client id is {clientId}</p>
             </div>
             <div className={'max-w-8xl mx-auto border-gray-800 border-2 flex flex-col'}>
-                {showLobby && <Lobby clientId={clientId} gameId={gameId} setGameId={setGameId} sendJsonMessage={sendJsonMessage}/>}
+                {showLobby && <Lobby clientId={clientId} gameId={gameId} setGameId={setGameId} sendJsonMessage={sendJsonMessage} games={games}/>}
                 {showGame && <Game clientId={clientId} gameId={gameId} game={game} leavingPlayer={leavingPlayer} setLeavingPlayer={setLeavingPlayer}
                                setShowGame={setShowGame} setShowLobby={setShowLobby} sendJsonMessage={sendJsonMessage}/>}
             </div>
