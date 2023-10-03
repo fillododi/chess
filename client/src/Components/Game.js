@@ -45,6 +45,7 @@ const Game = ({clientId, gameId, game, leavingPlayer, setLeavingPlayer, setShowG
         setShowGame(false)
         setShowLobby(true)
         setLeavingPlayer(null) //fa in modo che quando si joinnerà il prossimo gioco non esca la schermata di fine gioco
+        setFinishedGame(false)
     }
 
     const handleDraw = () => { //offri o accetta patta
@@ -87,7 +88,7 @@ const Game = ({clientId, gameId, game, leavingPlayer, setLeavingPlayer, setShowG
         }
         <div className={'flex flex-row justify-evenly'}>
             <div className={'flex flex-col gap-y-4'}>
-                <Board game={game} playerColor={playerColor} isActivePlayer={isActivePlayer} sendJsonMessage={sendJsonMessage}/>
+                {game.board && <Board game={game} playerColor={playerColor} isActivePlayer={isActivePlayer} sendJsonMessage={sendJsonMessage}/>}
                 <div className={'flex flex-row gap-x-4'}>
                     <button className={'border-blue-600 border-2 rounded-md p-2 hover:bg-blue-600 hover:text-white'}
                             onClick={handleQuit}>{finishedGame? 'Go back to the lobby': 'Quit Game'}</button>

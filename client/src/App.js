@@ -15,7 +15,6 @@ function App() {
     const [showGame, setShowGame] = useState(false)
     const [clientId, setClientId] = useState(null)
     const [gameId, setGameId] = useState(null)
-    const [gameCreated, setGameCreated] = useState(null)
     const [game, setGame] = useState(null)
     const [leavingPlayer, setLeavingPlayer] = useState(null)
 
@@ -27,12 +26,8 @@ function App() {
                 setClientId(lastJsonMessage.clientId)
                 console.log('connected')
             }
-            if(method === "create"){ //risposta alla creazione della partita, in cui si ottiene il gameid
-                setGameId(lastJsonMessage.gameId)
-                setGameCreated(lastJsonMessage.gameId) //in questo modo il client joinna automaticamente
-                console.log("Created server")
-            }
             if(method === 'join'){
+                setGameId(lastJsonMessage.gameId)
                 setGame(lastJsonMessage.game)
                 setShowLobby(false)
                 setShowGame(true)
@@ -49,23 +44,13 @@ function App() {
             }
             if(method === 'start'){
                 setGame(lastJsonMessage.game)
+                setGameId(lastJsonMessage.gameId)
             }
             if(method === 'move'){
                 setGame(lastJsonMessage.game)
             }
         }
     }, [lastJsonMessage])
-
-    useEffect(()=>{ //join automatico alle partite appena create
-        if(gameCreated){
-            const payload = { //richiesta che verrà mandata
-                "method": "join",
-                "clientId": clientId,
-                "gameId": gameCreated
-            }
-            sendJsonMessage(payload) //invia richiesta
-        }
-    }, [gameCreated])
 
     return (
         <div className="App">

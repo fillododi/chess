@@ -1,18 +1,35 @@
-import React from "react";
+import React, {useState} from "react";
+import {FaRegChessPawn, FaChessPawn, FaDiceFive} from "react-icons/fa6";
 
 const Lobby = ({clientId, gameId, setGameId, sendJsonMessage}) => {
+
+    const [selectedColor, setSelectedColor] = useState('random')
     const handleGameIdChange = (e) => {
         e.preventDefault()
         setGameId(e.target.value)
     }
+    const handleSelectColor = (e) => {
+        e.preventDefault()
+        setSelectedColor(e.target.value)
+    }
 
     return <div className={'flex flex-col gap-y-8 p-8'}>
         <h1 className={'text-4xl'}>Welcome to the Lobby!</h1>
-        <div>
+        <div className={'flex flex-row justify-center gap-x-2'}>
+            <button onClick={handleSelectColor} value={'white'} className={'border-blue-600 border-2 rounded-md p-2 hover:bg-blue-600 hover:text-white focus:bg-blue-600 focus:text-white'}>
+                <FaRegChessPawn className={'pointer-events-none text-xl'}/>
+            </button>
+            <button onClick={handleSelectColor} value={'black'} className={'border-blue-600 border-2 rounded-md p-2 hover:bg-blue-600 hover:text-white focus:bg-blue-600 focus:text-white'}>
+                <FaChessPawn className={'pointer-events-none text-xl'}/>
+            </button>
+            <button onClick={handleSelectColor} value={'random'} className={'border-blue-600 border-2 rounded-md p-2 hover:bg-blue-600 hover:text-white focus:bg-blue-600 focus:text-white'}>
+                <FaDiceFive className={'pointer-events-none text-xl'}/>
+            </button>
             <button className={'border-blue-600 border-2 rounded-md p-2 hover:bg-blue-600 hover:text-white'} onClick={()=> {
                 const payload = { //richiesta che verrà mandata
                     "method": "create",
-                    "clientId": clientId
+                    "clientId": clientId,
+                    "color": selectedColor
                 }
                 sendJsonMessage(payload) //invia richiesta
             }}>New Game</button>
@@ -23,7 +40,8 @@ const Lobby = ({clientId, gameId, setGameId, sendJsonMessage}) => {
                 const payload = { //richiesta che verrà mandata
                     "method": "join",
                     "clientId": clientId,
-                    "gameId": gameId
+                    "gameId": gameId,
+                    "color": selectedColor
                 }
                 console.log(payload)
                 sendJsonMessage(payload) //invia richiesta

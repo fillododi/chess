@@ -41,6 +41,7 @@ wsServer.on("request", request => { //quando il client manda richieste al socket
         const result = JSON.parse(message.utf8Data) //estrae i dati della richiesta
         if(result.method === "create") { //richiesta di creazione partita
             const clientId = result.clientId //client che ha richiesto la creazione
+            const color = result.color
             if(clients[clientId].gameId) { //se il client è già in gioco
                 console.log(clientId, " tried to create a game but is already playing another game")
                 return
@@ -55,12 +56,20 @@ wsServer.on("request", request => { //quando il client manda richieste al socket
                         "receiving_client": null
                     },
                     "turn": null,
-                    "board": [],
+                    "board": null,
                     "history": [],
                     "chat": []
                 }
-                const payload = { //risposta che verrà data con all'interno l'id della partita
-                    "method": "create",
+                clients[clientId].gameId = gameId //associa al cliente la partita a cui si sta unendo per evitare che entri anche in altre
+                const game = games[gameId]
+                game.clients.push({ //aggiunge il client alla partita: qui vanno messi tutti i dati di gioco del client
+                    "clientId": clientId,
+                    "color": color
+                })
+                console.log(clientId, " has joined the game with id ", gameId, " players are now: ")
+                const payload = { //risposta che verrà data con all'interno l'oggetto della partita che contiene tutti i dati di gioco
+                    "method": "join",
+                    "game": game,
                     "gameId": gameId
                 }
                 console.log(clientId, " has created a game with id ", gameId)
@@ -94,14 +103,19 @@ wsServer.on("request", request => { //quando il client manda richieste al socket
                     clients[client.clientId].connection.send(JSON.stringify(payload))
                 })
                 if(game.clients.length == 2){ //se si è connesso il secondo giocatore: setta la partita e inizia
-                    console.log("Starting game ", game.id)
-                    const randomNumber = Math.random() //per decidere chi è bianco e chi nero
-                    if(randomNumber < 0.5){
-                        game.clients[0].color = 'white'
+                    if(game.clients[0].color === 'white'){
                         game.clients[1].color = 'black'
-                    } else {
-                        game.clients[0].color = 'black'
+                    } else if(game.clients[0].color === 'black'){
                         game.clients[1].color = 'white'
+                    } else {
+                        const randomNumber = Math.random() //per decidere chi è bianco e chi nero
+                        if(randomNumber < 0.5){
+                            game.clients[0].color = 'white'
+                            game.clients[1].color = 'black'
+                        } else {
+                            game.clients[0].color = 'black'
+                            game.clients[1].color = 'white'
+                        }
                     }
                     game.active_player = game.clients.find(client => client.color.includes('white')) //fa iniziare il bianco
                     game.clients.map(client => console.log(client.clientId, " is ", client.color))
@@ -123,7 +137,8 @@ wsServer.on("request", request => { //quando il client manda richieste al socket
                             "board": boardToSend,
                             "history": game.history,
                             "chat": game.chat
-                        }
+                        },
+                        "gameId": gameId
                     }
                     game.clients.forEach(client => { //invia la risposta a tutti i client associati alla partita
                         clients[client.clientId].connection.send(JSON.stringify(payload))
@@ -135,6 +150,7 @@ wsServer.on("request", request => { //quando il client manda richieste al socket
             const clientId = result.clientId //client che ha abbandonato
             const gameId = result.gameId //partita abbandonata
             if(clients[clientId].gameId != gameId){ //se non coincidono, ovvero errore
+                console.log('error')
                 return
             }
             handleQuit(clientId, gameId) //fa uscire il giocatore dalla partita
@@ -284,7 +300,8 @@ const handleQuit = (clientId, gameId) => {
     const game = games[gameId] //trova la partita
     console.log(clientId, " left the game with id ", gameId)
     let payload = {}
-    if(game.board === []){
+    console.log(game.board)
+    if(!game.board){
         payload = {
             "method": "leave",
             "game": {
@@ -293,7 +310,7 @@ const handleQuit = (clientId, gameId) => {
                 "active_player": game.active_player,
                 "draw_offer": game.draw_offer,
                 "turn": game.turn,
-                "board": [],
+                "board": {},
                 "history": game.history,
                 "chat": game.chat
             },
