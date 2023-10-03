@@ -263,4 +263,120 @@ export class Queen extends Piece{
         super(color, square)
         this.type = "queen"
     }
+    getPossibleMoves() {
+        let possibleMoves = []
+        let squareUp = this.square.getSquareUp()
+        let pieceOnSquareUp = null
+        while(squareUp){
+            pieceOnSquareUp = squareUp.getPiece()
+            if(pieceOnSquareUp){
+                if (pieceOnSquareUp.color != this.color){
+                    possibleMoves.push(squareUp)
+                }
+                break
+            } else {
+                possibleMoves.push(squareUp)
+                squareUp = squareUp.getSquareUp()
+            }
+        }
+        let squareDown = this.square.getSquareDown()
+        let pieceOnSquareDown = null
+        while(squareDown){
+            pieceOnSquareDown = squareDown.getPiece()
+            if(pieceOnSquareDown){
+                if (pieceOnSquareDown.color != this.color){
+                    possibleMoves.push(squareDown)
+                }
+                break
+            } else {
+                possibleMoves.push(squareDown)
+                squareDown = squareDown.getSquareDown()
+            }
+        }
+        let squareRight = this.square.getSquareRight()
+        let pieceOnSquareRight = null
+        while(squareRight){
+            pieceOnSquareRight = squareRight.getPiece()
+            if(pieceOnSquareRight){
+                if (pieceOnSquareRight.color != this.color){
+                    possibleMoves.push(squareRight)
+                }
+                break
+            } else {
+                possibleMoves.push(squareRight)
+                squareRight = squareRight.getSquareRight()
+            }
+        }
+        let squareLeft = this.square.getSquareLeft()
+        let pieceOnSquareLeft = null
+        while(squareLeft){
+            pieceOnSquareLeft = squareLeft.getPiece()
+            if(pieceOnSquareLeft){
+                if (pieceOnSquareLeft.color != this.color){
+                    possibleMoves.push(squareLeft)
+                }
+                break
+            } else {
+                possibleMoves.push(squareLeft)
+                squareLeft = squareLeft.getSquareLeft()
+            }
+        }
+        let squareUpRight = this.square.getSquareUpRight()
+        let pieceOnSquareUpRight = null
+        while(squareUpRight){
+            pieceOnSquareUpRight = squareUpRight.getPiece()
+            if(pieceOnSquareUpRight){
+                if (pieceOnSquareUpRight.color != this.color){
+                    possibleMoves.push(squareUpRight)
+                }
+                break
+            } else {
+                possibleMoves.push(squareUpRight)
+                squareUpRight = squareUpRight.getSquareUpRight()
+            }
+        }
+        let squareDownRight = this.square.getSquareDownRight()
+        let pieceOnSquareDownRight = null
+        while(squareDownRight){
+            pieceOnSquareDownRight = squareDownRight.getPiece()
+            if(pieceOnSquareDownRight){
+                if (pieceOnSquareDownRight.color != this.color){
+                    possibleMoves.push(squareDownRight)
+                }
+                break
+            } else {
+                possibleMoves.push(squareDownRight)
+                squareDownRight = squareDownRight.getSquareDownRight()
+            }
+        }
+        let squareUpLeft = this.square.getSquareUpLeft()
+        let pieceOnSquareUpLeft = null
+        while(squareUpLeft){
+            pieceOnSquareUpLeft = squareUpLeft.getPiece()
+            if(pieceOnSquareUpLeft){
+                if (pieceOnSquareUpLeft.color != this.color){
+                    possibleMoves.push(squareUpLeft)
+                }
+                break
+            } else {
+                possibleMoves.push(squareUpLeft)
+                squareUpLeft = squareUpLeft.getSquareUpLeft()
+            }
+        }
+        let squareDownLeft = this.square.getSquareDownLeft()
+        let pieceOnSquareDownLeft = null
+        while(squareDownLeft){
+            pieceOnSquareDownLeft = squareDownLeft.getPiece()
+            if(pieceOnSquareDownLeft){
+                if (pieceOnSquareDownLeft.color != this.color){
+                    possibleMoves.push(squareDownLeft)
+                }
+                break
+            } else {
+                possibleMoves.push(squareDownLeft)
+                squareDownLeft = squareDownLeft.getSquareDownLeft()
+            }
+        }
+        return possibleMoves
+    }
 }
