@@ -114,6 +114,66 @@ export class Rook extends Piece{
         super(color, square)
         this.type = "rook"
     }
+
+    getPossibleMoves() {
+        let possibleMoves = []
+        let squareUp = this.square.getSquareUp()
+        let pieceOnSquareUp = null
+        while(squareUp){
+            pieceOnSquareUp = squareUp.getPiece()
+            if(pieceOnSquareUp){
+                if (pieceOnSquareUp.color != this.color){
+                    possibleMoves.push(squareUp)
+                }
+                break
+            } else {
+                possibleMoves.push(squareUp)
+                squareUp = squareUp.getSquareUp()
+            }
+        }
+        let squareDown = this.square.getSquareDown()
+        let pieceOnSquareDown = null
+        while(squareDown){
+            pieceOnSquareDown = squareDown.getPiece()
+            if(pieceOnSquareDown){
+                if (pieceOnSquareDown.color != this.color){
+                    possibleMoves.push(squareDown)
+                }
+                break
+            } else {
+                possibleMoves.push(squareDown)
+                squareDown = squareDown.getSquareDown()
+            }
+        }
+        let squareRight = this.square.getSquareRight()
+        let pieceOnSquareRight = null
+        while(squareRight){
+            pieceOnSquareRight = squareRight.getPiece()
+            if(pieceOnSquareRight){
+                if (pieceOnSquareRight.color != this.color){
+                    possibleMoves.push(squareRight)
+                }
+                break
+            } else {
+                possibleMoves.push(squareRight)
+                squareRight = squareRight.getSquareRight()
+            }
+        }
+        let squareLeft = this.square.getSquareLeft()
+        let pieceOnSquareLeft = null
+        while(squareLeft){
+            pieceOnSquareLeft = squareLeft.getPiece()
+            if(pieceOnSquareLeft){
+                if (pieceOnSquareLeft.color != this.color){
+                    possibleMoves.push(squareLeft)
+                }
+                break
+            } else {
+                possibleMoves.push(squareLeft)
+                squareLeft = squareLeft.getSquareLeft()
+            }
+        }
+    }
 }
 
 export class Bishop extends Piece{
