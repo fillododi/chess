@@ -56,6 +56,10 @@ export class Board {
         })
     }
 
+    getpieceList(){
+        return this.pieceList
+    }
+
     getSquares(){
         return this.squares
     }
@@ -112,5 +116,26 @@ export class Board {
             "row": piece.getSquare().getRow()
         }})
         return data
+    }
+
+    changeBoard(newPieceList){
+        this.pieceList.forEach(piece => this.killPiece(piece)) //rimuove i pezzi attuali
+        newPieceList.forEach(piece => this.addPiece(piece.getType(), piece.getColor(), piece.getSquare()))
+    }
+
+    getPlayerColorUnderCheck(){
+        let color = ''
+        this.pieceList.forEach(piece => { //per ciascun pezzo
+            const possibleMoves = piece.getPossibleMoves() //controlla dove può andare il pezzo
+            possibleMoves.forEach(square => { //per ciascuna casella
+                if(square.getPiece()){ //se c'è un pezzo
+                    piece = square.getPiece()
+                    if(piece.getType() === 'king'){ //se è un re
+                        color = piece.getColor()
+                    }
+                }
+            })
+        })
+        return color
     }
 }
