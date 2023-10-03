@@ -173,6 +173,7 @@ export class Rook extends Piece{
                 squareLeft = squareLeft.getSquareLeft()
             }
         }
+        return possibleMoves
     }
 }
 
@@ -180,6 +181,66 @@ export class Bishop extends Piece{
     constructor(color, square){
         super(color, square)
         this.type = "bishop"
+    }
+    getPossibleMoves() {
+        let possibleMoves = []
+        let squareUpRight = this.square.getSquareUpRight()
+        let pieceOnSquareUpRight = null
+        while(squareUpRight){
+            pieceOnSquareUpRight = squareUpRight.getPiece()
+            if(pieceOnSquareUpRight){
+                if (pieceOnSquareUpRight.color != this.color){
+                    possibleMoves.push(squareUpRight)
+                }
+                break
+            } else {
+                possibleMoves.push(squareUpRight)
+                squareUpRight = squareUpRight.getSquareUpRight()
+            }
+        }
+        let squareDownRight = this.square.getSquareDownRight()
+        let pieceOnSquareDownRight = null
+        while(squareDownRight){
+            pieceOnSquareDownRight = squareDownRight.getPiece()
+            if(pieceOnSquareDownRight){
+                if (pieceOnSquareDownRight.color != this.color){
+                    possibleMoves.push(squareDownRight)
+                }
+                break
+            } else {
+                possibleMoves.push(squareDownRight)
+                squareDownRight = squareDownRight.getSquareDownRight()
+            }
+        }
+        let squareUpLeft = this.square.getSquareUpLeft()
+        let pieceOnSquareUpLeft = null
+        while(squareUpLeft){
+            pieceOnSquareUpLeft = squareUpLeft.getPiece()
+            if(pieceOnSquareUpLeft){
+                if (pieceOnSquareUpLeft.color != this.color){
+                    possibleMoves.push(squareUpLeft)
+                }
+                break
+            } else {
+                possibleMoves.push(squareUpLeft)
+                squareUpLeft = squareUpLeft.getSquareUpLeft()
+            }
+        }
+        let squareDownLeft = this.square.getSquareDownLeft()
+        let pieceOnSquareDownLeft = null
+        while(squareDownLeft){
+            pieceOnSquareDownLeft = squareDownLeft.getPiece()
+            if(pieceOnSquareDownLeft){
+                if (pieceOnSquareDownLeft.color != this.color){
+                    possibleMoves.push(squareDownLeft)
+                }
+                break
+            } else {
+                possibleMoves.push(squareDownLeft)
+                squareDownLeft = squareDownLeft.getSquareDownLeft()
+            }
+        }
+        return possibleMoves
     }
 }
 
