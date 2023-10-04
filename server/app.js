@@ -75,6 +75,7 @@ wsServer.on("request", request => { //quando il client manda richieste al socket
                 console.log(clientId, " has created a game with id ", gameId)
                 const connection = clients[clientId].connection //trova la connessione alla quale mandare la risposta (ovvero il client che ha mandato la richiesta)
                 connection.send(JSON.stringify(payload)) //invia la risposta
+                broadcastGameList()
             }
         }
         if(result.method === "join") { //richiesta di partecipazione alla partita
@@ -143,6 +144,7 @@ wsServer.on("request", request => { //quando il client manda richieste al socket
                     game.clients.forEach(client => { //invia la risposta a tutti i client associati alla partita
                         clients[client.clientId].connection.send(JSON.stringify(payload))
                     })
+                    broadcastGameList()
                 }
             }
         }
@@ -154,6 +156,7 @@ wsServer.on("request", request => { //quando il client manda richieste al socket
                 return
             }
             handleQuit(clientId, gameId) //fa uscire il giocatore dalla partita
+            broadcastGameList()
         }
         if(result.method === "draw"){
             const clientId = result.clientId
@@ -282,21 +285,7 @@ wsServer.on("request", request => { //quando il client manda richieste al socket
         if(result.method === 'getGames'){
             const clientId = result.clientId
             if(clientId){
-                const gameList = Object.keys(games).map(gameId => {
-                    const game = games[gameId]
-                    if(game.clients.length === 1) {
-                        const clientInGame = game.clients[0]
-                        return {
-                            "gameId": gameId,
-                            "client": clientInGame
-                        }
-                    }
-                })
-                const payload = { //risposta che viene data al client al momento della connessione: qui vanno mandati i dati dell'utente non di gioco che serviranno al browser
-                    "method": "getGames",
-                    "games": gameList
-                }
-                connection.send(JSON.stringify(payload))
+                sendGameList(connection)
             }
         }
     })
@@ -309,20 +298,9 @@ wsServer.on("request", request => { //quando il client manda richieste al socket
         "id": clientId, //id del client
         "gameId": null //id della partita a cui sta giocando il client
     }
-    const gameList = Object.keys(games).map(gameId => {
-        const game = games[gameId]
-        if(game.clients.length === 1) {
-            const clientInGame = game.clients[0]
-            return {
-                "gameId": gameId,
-                "client": clientInGame
-            }
-        }
-    })
     const payload = { //risposta che viene data al client al momento della connessione: qui vanno mandati i dati dell'utente non di gioco che serviranno al browser
         "method": "connect",
-        "clientId": clientId,
-        "games": gameList
+        "clientId": clientId
     }
     connection.send(JSON.stringify(payload)) //invia la risposta al client quando esso si connette
 })
@@ -367,8 +345,35 @@ const handleQuit = (clientId, gameId) => {
         clients[client.clientId].gameId = null //"libera" gli altri giocatori che ora possono fare altre partite
         clients[client.clientId].connection.send(JSON.stringify(payload))
     })
+    games[gameId] = null
     delete games[gameId] //rimuove la partita dall'elenco
     console.log("game ", gameId, " has finished")
+}
+
+const sendGameList = (connection) => {
+    let gameList = []
+    Object.keys(games).forEach(gameId => {
+        const game = games[gameId]
+        if(game.clients.length === 1) {
+            const clientInGame = game.clients[0]
+            gameList.push({
+                "gameId": gameId,
+                "client": clientInGame
+            })
+        }
+    })
+    const payload = {
+        "method": "getGames",
+        "games": gameList
+    }
+    connection.send(JSON.stringify(payload))
+}
+const broadcastGameList = () => {
+    const connectionsList = Object.keys(clients).map(clientId => {
+        return clients[clientId].connection
+    })
+
+    connectionsList.forEach(connection => sendGameList(connection))
 }
 
 function S4() { //serve a generare stringhe di numeri

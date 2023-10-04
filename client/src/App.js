@@ -25,7 +25,6 @@ function App() {
             const method = lastJsonMessage.method
             if(method === 'connect'){ //messaggio che arriva quando il client si connette, ottenendo il client id
                 setClientId(lastJsonMessage.clientId)
-                setGames(lastJsonMessage.games)
                 console.log('connected')
             }
             if(method === 'join'){
@@ -57,12 +56,14 @@ function App() {
         }
     }, [lastJsonMessage])
 
-    useEffect(()=>{ //aggiorna la lista dei giochi
-        sendJsonMessage({
-            'method': 'getGames',
-            'clientId': clientId
-        })
-    }, [showLobby, games])
+    useEffect(()=>{ //richiesta automatica partite
+        if(clientId){
+            sendJsonMessage({
+                "method": "getGames",
+                "clientId": clientId
+            })
+        }
+    }, [clientId, showLobby]) //serve clientid perché la prima volta che lo invia è quando clientid è prima che questo abbia un valore
 
     return (
         <div className="App">

@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import {FaRegChessPawn, FaChessPawn, FaDiceFive} from "react-icons/fa6";
 
 const Lobby = ({clientId, gameId, setGameId, sendJsonMessage, games}) => {
@@ -49,7 +49,8 @@ const Lobby = ({clientId, gameId, setGameId, sendJsonMessage, games}) => {
             }>Join Game</button>
         </div>
         <h4 className='text-xl'>or <span className={'text-blue-600 text-bold'}>Choose a game from the list</span> </h4>
-        <div className={'grid grid-cols-3'}>
+        {games != [] && <div className={'grid grid-cols-3'}>
+            {console.log(games)}
             {games.map(game => {
                 const opponentColor = game.client.color
                 let playerColor
@@ -77,7 +78,7 @@ const Lobby = ({clientId, gameId, setGameId, sendJsonMessage, games}) => {
                     }}>Join Game</button>
                 </div>
             })}
-        </div>
+        </div>}
     </div>
 }
 
