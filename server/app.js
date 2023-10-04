@@ -259,10 +259,10 @@ wsServer.on("request", request => { //quando il client manda richieste al socket
                         }
                         game.board.print()
                         game.active_player = game.clients.find(client => client != game.active_player) //passa il turno
-                        const alphabet = "abcdefgh"
+                        
                         const boardToSend = game.board.json()
                         const payload = { //risposta che verrà data per fare iniziare la partita
-                            "method": "start",
+                            "method": "move",
                             "game": {
                                 "id": gameId,
                                 "clients": game.clients,
