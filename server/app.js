@@ -156,7 +156,6 @@ wsServer.on("request", request => { //quando il client manda richieste al socket
                 return
             }
             handleQuit(clientId, gameId) //fa uscire il giocatore dalla partita
-            broadcastGameList()
         }
         if(result.method === "draw"){
             const clientId = result.clientId
@@ -348,6 +347,7 @@ const handleQuit = (clientId, gameId) => {
     games[gameId] = null
     delete games[gameId] //rimuove la partita dall'elenco
     console.log("game ", gameId, " has finished")
+    broadcastGameList()
 }
 
 const sendGameList = (connection) => {
