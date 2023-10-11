@@ -1,5 +1,9 @@
 import { findPiece, charToNum } from "./utils"
 
+const getSquare = (selectedPiece) => {
+    return {'row': selectedPiece.row, 'col': charToNum(selectedPiece.column)};
+}
+
 const getSquareUp = (square) => {
     if (square){
         return {'row': square.row + 1, 'col': charToNum(square.column)};
@@ -68,7 +72,7 @@ const getSquareLeft = (square) => {
 
 export const trajectoryPawn = (selectedPiece, board) => {
     let possibleMoves = []
-    const square = {'row': selectedPiece.row, 'column': selectedPiece.column};
+    const square = getSquare(selectedPiece);
     if(selectedPiece.color === 'white'){
         //move up
         const squareUp = getSquareUp(square);        
@@ -125,11 +129,11 @@ export const trajectoryPawn = (selectedPiece, board) => {
 
 export const trajectoryBishop = (selectedPiece, board) => {
     let possibleMoves = [];
-    if (selectedPiece.color === 'white'){ // TEAM BIANCO
-
-    } else { // TEAM NERO
-
-    }
+    // UP RIGHT
+    
+    // UP LEFT
+    // DOWN RIGHT
+    // DOWN LEFT
 }
 
 
