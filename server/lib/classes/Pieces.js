@@ -79,11 +79,9 @@ export class Pawn extends Piece{
             const squareUp = this.square.getSquareUp()
             if(squareUp && !board.findPiece(squareUp)){
                 possibleMoves.push(squareUp)
-            }
-            //move up by 2
-            if(squareUp && !board.findPiece(squareUp)){
+                //move up by 2
                 const square2Ups = squareUp.getSquareUp()
-                if(square2Ups && !board.findPiece(square2Ups)){
+                if(square2Ups && !board.findPiece(square2Ups) && this.square.getRow() === 2){
                     possibleMoves.push(square2Ups)
                 }
             }
@@ -106,10 +104,8 @@ export class Pawn extends Piece{
             const squareDown = this.square.getSquareDown()
             if(squareDown && !board.findPiece(squareDown)){
                 possibleMoves.push(squareDown)
-            }
-            if(squareDown){
                 const square2Downs = squareDown.getSquareDown()
-                if(square2Downs && !board.findPiece(square2Downs)){
+                if(square2Downs && !board.findPiece(square2Downs) && this.square.getRow() === 7){
                     possibleMoves.push(square2Downs)
                 }
             }
@@ -359,56 +355,56 @@ export class King extends Piece{
         const squareUp = this.square.getSquareUp()
         if(squareUp){
             let pieceOnSquareUp = squareUp.getPiece()
-            if(pieceOnSquareUp && pieceOnSquareUp.color != this.color){
+            if(!pieceOnSquareUp || pieceOnSquareUp.color != this.color){
                 possibleMoves.push(squareUp)
             }
         }
         const squareUpRight = this.square.getSquareUpRight()
         if(squareUpRight){
             let pieceOnSquareUpRight = squareUpRight.getPiece()
-            if(pieceOnSquareUpRight && pieceOnSquareUpRight.color != this.color){
+            if(!pieceOnSquareUpRight || pieceOnSquareUpRight.color != this.color){
                 possibleMoves.push(squareUpRight)
             }
         }
         const squareRight = this.square.getSquareRight()
         if(squareRight){
             let pieceOnSquareRight = squareRight.getPiece()
-            if(pieceOnSquareRight && pieceOnSquareRight.color != this.color){
+            if(!pieceOnSquareRight || pieceOnSquareRight.color != this.color){
                 possibleMoves.push(squareRight)
             }
         }
         const squareDownRight = this.square.getSquareDownRight()
         if(squareDownRight){
             let pieceOnSquareDownRight = squareDownRight.getPiece()
-            if(pieceOnSquareDownRight && pieceOnSquareDownRight.color != this.color){
+            if(!pieceOnSquareDownRight || pieceOnSquareDownRight.color != this.color){
                 possibleMoves.push(squareDownRight)
             }
         }
         const squareDown = this.square.getSquareDown()
         if(squareDown){
             let pieceOnSquareDown = squareDown.getPiece()
-            if(pieceOnSquareDown && pieceOnSquareDown.color != this.color){
+            if(!pieceOnSquareDown || pieceOnSquareDown.color != this.color){
                 possibleMoves.push(squareDown)
             }
         }
         const squareDownLeft = this.square.getSquareDownLeft()
         if(squareDownLeft){
             let pieceOnSquareDownLeft = squareDownLeft.getPiece()
-            if(pieceOnSquareDownLeft && pieceOnSquareDownLeft.color != this.color){
+            if(!pieceOnSquareDownLeft || pieceOnSquareDownLeft.color != this.color){
                 possibleMoves.push(squareDownLeft)
             }
         }
         const squareLeft = this.square.getSquareLeft()
         if(squareLeft){
             let pieceOnSquareLeft = squareLeft.getPiece()
-            if(pieceOnSquareLeft && pieceOnSquareLeft.color != this.color){
+            if(!pieceOnSquareLeft || pieceOnSquareLeft.color != this.color){
                 possibleMoves.push(squareLeft)
             }
         }
         const squareUpLeft = this.square.getSquareUpLeft()
         if(squareUpLeft){
             let pieceOnSquareUpLeft = squareUpLeft.getPiece()
-            if(pieceOnSquareUpLeft && pieceOnSquareUpLeft.color != this.color){
+            if(!pieceOnSquareUpLeft || pieceOnSquareUpLeft.color != this.color){
                 possibleMoves.push(squareUpLeft)
             }
         }
