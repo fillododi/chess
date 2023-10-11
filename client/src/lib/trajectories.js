@@ -1,64 +1,64 @@
 import { findPiece, charToNum } from "./utils"
 
-const getSquareUp = (selectedPiece) => {
-    if (selectedPiece){
-        return {'row': selectedPiece.row + 1, 'col': charToNum(selectedPiece.column)};
+const getSquareUp = (square) => {
+    if (square){
+        return {'row': square.row + 1, 'col': charToNum(square.column)};
     } else return null;
 }
 
-const get2SquareUp = (selectedPiece) => {
-    if (selectedPiece){
-        return {'row': selectedPiece.row + 2, 'col': charToNum(selectedPiece.column)}
+const get2SquareUp = (square) => {
+    if (square){
+        return {'row': square.row + 2, 'col': charToNum(square.column)}
     } else return null;
 }
 
-const getSquareUpRight = (selectedPiece) => {
-    if (selectedPiece){
-        return {'row': selectedPiece.row + 1, 'col': charToNum(selectedPiece.column) + 1};
+const getSquareUpRight = (square) => {
+    if (square){
+        return {'row': square.row + 1, 'col': charToNum(square.column) + 1};
     } else return null;
 }
 
-const getSquareUpLeft = (selectedPiece) => {
-    if (selectedPiece){
-        return {'row': selectedPiece.row + 1, 'col': charToNum(selectedPiece.column) - 1};
+const getSquareUpLeft = (square) => {
+    if (square){
+        return {'row': square.row + 1, 'col': charToNum(square.column) - 1};
     } else return null;
 }
 
-const getSquareDown = (selectedPiece) => {
-    if (selectedPiece){
-        return {'row': selectedPiece.row - 1, 'col': charToNum(selectedPiece.column)};
+const getSquareDown = (square) => {
+    if (square){
+        return {'row': square.row - 1, 'col': charToNum(square.column)};
     } else return null;
 }
 
-const get2SquareDown = (selectedPiece) => {
-    if (selectedPiece){
-        return {'row': selectedPiece.row - 2, 'col': charToNum(selectedPiece.column)}
+const get2SquareDown = (square) => {
+    if (square){
+        return {'row': square.row - 2, 'col': charToNum(square.column)}
     } else return null;
         
 }
 
-const getSquareDownLeft = (selectedPiece) => {
-    if (selectedPiece){
-        return {'row': selectedPiece.row - 1, 'col': charToNum(selectedPiece.column) - 1};
+const getSquareDownLeft = (square) => {
+    if (square){
+        return {'row': square.row - 1, 'col': charToNum(square.column) - 1};
     } else return null;
 }
 
-const getSquareDownRight = (selectedPiece) => {
-    if (selectedPiece){
-        return {'row': selectedPiece.row - 1, 'col': charToNum(selectedPiece.column) + 1};
+const getSquareDownRight = (square) => {
+    if (square){
+        return {'row': square.row - 1, 'col': charToNum(square.column) + 1};
     } else return null;
 }
 
 
-const getSquareRight = (selectedPiece) => {
-    if (selectedPiece){
-        return {'row': selectedPiece.row, 'col': charToNum(selectedPiece.column) + 1}
+const getSquareRight = (square) => {
+    if (square){
+        return {'row': square.row, 'col': charToNum(square.column) + 1}
     } else return null;
 }
 
-const getSquareLeft = (selectedPiece) => {
-    if (selectedPiece){
-        return {'row': selectedPiece.row, 'col': charToNum(selectedPiece.column) - 1}
+const getSquareLeft = (square) => {
+    if (square){
+        return {'row': square.row, 'col': charToNum(square.column) - 1}
     } else return null;
 }
 
@@ -70,67 +70,62 @@ export const trajectoryPawn = (selectedPiece, board) => {
     let possibleMoves = []
     if(selectedPiece.color === 'white'){
         //move up
-        const squareUp = getSquareUp(selectedPiece);        
+        const square = {'row': selectedPiece.row, 'column': selectedPiece.column};
+        const squareUp = getSquareUp(square);        
         if(!findPiece(board, squareUp.row, squareUp.col)){
             possibleMoves.push(squareUp)
-            console.log('can move up')
             //move up by 2
-            if (selectedPiece.row === 2){
+            if (square.row === 2){
 
-                const square2Ups = get2SquareUp(selectedPiece);
+                const square2Ups = get2SquareUp(square);
                 if(!findPiece(board, square2Ups.row, square2Ups.col)){
                     possibleMoves.push(square2Ups)
-                    console.log('can move up by 2')
                 }
             }
         }
         //move diagonally to kill
-        const squareUpRight = getSquareUpRight(selectedPiece);
+        const squareUpRight = getSquareUpRight(square);
         let pieceToKill = findPiece(board, squareUpRight.row, squareUpRight.col);
         if(pieceToKill && pieceToKill.color === 'black'){
             possibleMoves.push(squareUpRight);
-            console.log('can move up right')
         }
-        const squareUpLeft = getSquareUpLeft(selectedPiece);
+        const squareUpLeft = getSquareUpLeft(square);
         pieceToKill = findPiece(board, squareUpLeft.row, squareUpLeft.col);
         if(pieceToKill && pieceToKill.color === 'black'){
             possibleMoves.push(squareUpLeft)
-            console.log('can move up left')
         }
     } else { // PEZZO NERO
-        const squareDown = getSquareDown(selectedPiece);
+        const squareDown = getSquareDown(square);
         if(!findPiece(board, squareDown.row, squareDown.col)){
             possibleMoves.push(squareDown)
-            console.log('can move down')
             // down by 2
-            if (selectedPiece.row === 7){
+            if (square.row === 7){
 
-                const square2Downs = get2SquareDown(selectedPiece);
+                const square2Downs = get2SquareDown(square);
                 if(!findPiece(board, square2Downs.row, square2Downs.col)){
                     possibleMoves.push(square2Downs)
-                    console.log('can move down by 2')
                 }
             }
         }
         //move diagonally to kill
-        const squareDownRight = getSquareDownRight(selectedPiece)
+        const squareDownRight = getSquareDownRight(square)
         let pieceToKill = findPiece(board, squareDownRight.row, squareDownRight.col);
         if(pieceToKill && pieceToKill.color === 'white'){
             possibleMoves.push(squareDownRight)
-            console.log('can move down right')
         }
-        const squareDownLeft = getSquareDownLeft(selectedPiece)
+        const squareDownLeft = getSquareDownLeft(square)
         pieceToKill = findPiece(board, squareDownLeft.row, squareDownLeft.col);
         if(pieceToKill && pieceToKill.color === 'white'){
             possibleMoves.push(squareDownLeft)
-            console.log('can move down left')
         }
     }
     return possibleMoves
 }
 
 
-export const trajectoryBishop = (selectedPiece, board) => {}
+export const trajectoryBishop = (selectedPiece, board) => {
+    
+}
 
 
 export const trajectoryKing = (selectedPiece, board) => {}
