@@ -68,9 +68,9 @@ const getSquareLeft = (square) => {
 
 export const trajectoryPawn = (selectedPiece, board) => {
     let possibleMoves = []
+    const square = {'row': selectedPiece.row, 'column': selectedPiece.column};
     if(selectedPiece.color === 'white'){
         //move up
-        const square = {'row': selectedPiece.row, 'column': selectedPiece.column};
         const squareUp = getSquareUp(square);        
         if(!findPiece(board, squareUp.row, squareUp.col)){
             possibleMoves.push(squareUp)
@@ -124,7 +124,12 @@ export const trajectoryPawn = (selectedPiece, board) => {
 
 
 export const trajectoryBishop = (selectedPiece, board) => {
-    
+    let possibleMoves = [];
+    if (selectedPiece.color === 'white'){ // TEAM BIANCO
+
+    } else { // TEAM NERO
+
+    }
 }
 
 
