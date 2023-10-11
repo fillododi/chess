@@ -173,7 +173,53 @@ export const trajectoryBishop = (selectedPiece, board) => {
 export const trajectoryKing = (selectedPiece, board) => {}
 
 
-export const trajectoryKnight = (selectedPiece, board) => {}
+export const trajectoryKnight = (selectedPiece, board) => {
+    let possibleMoves = []
+    const square = getSquare(selectedPiece)
+    console.log(getSquareUp(square))
+    const squareUUL = getSquareLeft(get2SquareUp(square))
+    let piece = findPiece(board, squareUUL.row, squareUUL.col)
+    if(!piece || piece.color != selectedPiece.color){
+        possibleMoves.push(squareUUL)
+    }
+    const squareUUR = getSquareRight(get2SquareUp(square))
+    piece = findPiece(board, squareUUR.row, squareUUR.col)
+    if(!piece || piece.color != selectedPiece.color){
+        possibleMoves.push(squareUUR)
+    }
+    const squareURR = getSquareRight(getSquareRight(getSquareUp(square)))
+    piece = findPiece(board, squareURR.row, squareURR.col)
+    if(!piece || piece.color != selectedPiece.color){
+        possibleMoves.push(squareURR)
+    }
+    const squareDRR = getSquareRight(getSquareRight(getSquareDown(square)))
+    piece = findPiece(board, squareDRR.row, squareDRR.col)
+    if(!piece || piece.color != selectedPiece.color){
+        possibleMoves.push(squareDRR)
+    }
+    const squareDDR = getSquareRight(get2SquareDown(square))
+    piece = findPiece(board, squareDDR.row, squareDDR.col)
+    if(!piece || piece.color != selectedPiece.color){
+        possibleMoves.push(squareDDR)
+    }
+    const squareDDL = getSquareLeft(get2SquareDown(square))
+    piece = findPiece(board, squareDDL.row, squareDDL.col)
+    if(!piece || piece.color != selectedPiece.color){
+        possibleMoves.push(squareDDL)
+    }
+    const squareDLL = getSquareLeft(getSquareLeft(getSquareDown(square)))
+    piece = findPiece(board, squareDLL.row, squareDLL.col)
+    if(!piece || piece.color != selectedPiece.color){
+        possibleMoves.push(squareDLL)
+    }
+    const squareULL = getSquareLeft(getSquareLeft(getSquareUp(square)))
+    piece = findPiece(board, squareULL.row, squareULL.col)
+    if(!piece || piece.color != selectedPiece.color){
+        possibleMoves.push(squareULL)
+    }
+    console.log(possibleMoves)
+    return possibleMoves
+}
 
 
 export const trajectoryRook = (selectedPiece, board) => {}
