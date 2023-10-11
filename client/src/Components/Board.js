@@ -131,6 +131,7 @@ const Board = ({game, playerColor, isActivePlayer, sendJsonMessage}) => {
             } 
         }
     }
+    
 
     return <div className={'flex flex-col'}>
         {playerColor === 'white'?
