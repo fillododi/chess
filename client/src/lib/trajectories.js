@@ -222,4 +222,45 @@ export const trajectoryKnight = (selectedPiece, board) => {
 }
 
 
-export const trajectoryRook = (selectedPiece, board) => {}
+export const trajectoryRook = (selectedPiece, board) => {
+    let possibleMoves = [];
+    let square = getSquare(selectedPiece);
+    // UP
+    let offSet = 1;
+    while(square.row + offSet <= 8 && !findPiece(board, square.row + offSet, square.col)){
+        possibleMoves.push({'row': square.row + offSet, 'col': square.col});
+        offSet++;
+    }
+    if (square.row + offSet <= 8 && findPiece(board, square.row + offSet, square.col) && findPiece(board, square.row + offSet, square.col).color !== selectedPiece.color){
+        possibleMoves.push({'row': square.row + offSet, 'col': square.col});
+    }
+    // DOWN
+    offSet = 1;
+    while(square.row - offSet >= 1 && !findPiece(board, square.row - offSet, square.col)){
+        possibleMoves.push({'row': square.row - offSet, 'col': square.col});
+        offSet++;
+    }
+    if(square.row - offSet >= 1 && findPiece(board, square.row - offSet, square.col) && findPiece(board, square.row - offSet, square.col).color !== selectedPiece.color){
+        possibleMoves.push({'row': square.row - offSet, 'col': square.col});
+    }
+    // LEFT
+    offSet = 1;
+    while(square.col - offSet >= 1 && !findPiece(board, square.row, square.col - offSet)){
+        possibleMoves.push({'row': square.row, 'col': square.col - offSet});
+        offSet++;
+    }
+    if(square.col - offSet >= 1 && findPiece(board, square.row, square.col - offSet) && findPiece(board, square.row, square.col - offSet).color !== selectedPiece.color){
+        possibleMoves.push({'row': square.row, 'col': square.col - offSet});
+    }
+    // RIGHT
+    offSet = 1;
+    while(square.col + offSet <= 8 && !findPiece(board, square.row, square.col + offSet)){
+        possibleMoves.push({'row': square.row, 'col': square.col + offSet});
+        offSet++;
+    }
+    if(square.col + offSet <= 8 && findPiece(board, square.row, square.col + offSet) && findPiece(board, square.row, square.col + offSet).color !== selectedPiece.color){
+        possibleMoves.push({'row': square.row, 'col': square.col + offSet});
+    }
+
+    return possibleMoves;
+}
