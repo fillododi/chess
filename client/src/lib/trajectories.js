@@ -170,7 +170,51 @@ export const trajectoryBishop = (selectedPiece, board) => {
 }
 
 
-export const trajectoryKing = (selectedPiece, board) => {}
+export const trajectoryKing = (selectedPiece, board) => {
+    let possibleMoves = []
+    const square = getSquare(selectedPiece)
+    const squareUp = getSquareUp(square)
+    let piece = findPiece(board, squareUp.row, squareUp.col)
+    if(!piece || piece.color != selectedPiece.color){
+        possibleMoves.push(squareUp)
+    }
+    const squareUpRight = getSquareUpRight(square)
+    piece = findPiece(board, squareUpRight.row, squareUpRight.col)
+    if(!piece || piece.color != selectedPiece.color){
+        possibleMoves.push(squareUpRight)
+    }
+    const squareRight = getSquareRight(square)
+    piece = findPiece(board, squareRight.row, squareRight.col)
+    if(!piece || piece.color != selectedPiece.color){
+        possibleMoves.push(squareRight)
+    }
+    const squareDownRight = getSquareDownRight(square)
+    piece = findPiece(board, squareDownRight.row, squareDownRight.col)
+    if(!piece || piece.color != selectedPiece.color){
+        possibleMoves.push(squareDownRight)
+    }
+    const squareDown = getSquareDown(square)
+    piece = findPiece(board, squareDown.row, squareDown.col)
+    if(!piece || piece.color != selectedPiece.color){
+        possibleMoves.push(squareDown)
+    }
+    const squareDownLeft = getSquareDownLeft(square)
+    piece = findPiece(board, squareDownLeft.row, squareDownLeft.col)
+    if(!piece || piece.color != selectedPiece.color){
+        possibleMoves.push(squareDownLeft)
+    }
+    const squareLeft = getSquareLeft(square)
+    piece = findPiece(board, squareLeft.row, squareLeft.col)
+    if(!piece || piece.color != selectedPiece.color){
+        possibleMoves.push(squareLeft)
+    }
+    const squareUpLeft = getSquareUpLeft(square)
+    piece = findPiece(board, squareUpLeft.row, squareUpLeft.col)
+    if(!piece || piece.color != selectedPiece.color){
+        possibleMoves.push(squareUpLeft)
+    }
+    return possibleMoves
+}
 
 
 export const trajectoryKnight = (selectedPiece, board) => {
