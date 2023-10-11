@@ -1,7 +1,7 @@
 import { findPiece, charToNum } from "./utils"
 
 const getSquare = (selectedPiece) => {
-    return {'row': selectedPiece.row, 'col': charToNum(selectedPiece.column)};
+    return {'row': selectedPiece.row, 'column': charToNum(selectedPiece.column)};
 }
 
 const getSquareUp = (square) => {
