@@ -130,9 +130,9 @@ export class Board {
         let color = ''
         this.pieceList.forEach(piece => { //per ciascun pezzo
             const possibleMoves = piece.getPossibleMoves() //controlla dove può andare il pezzo
-            possibleMoves.forEach(square => { //per ciascuna casella
-                if(square.getPiece()){ //se c'è un pezzo
-                    piece = square.getPiece()
+            possibleMoves.forEach(move => { //per ciascuna casella
+                if(move.newSquare.getPiece()){ //se c'è un pezzo
+                    piece = move.newSquare.getPiece()
                     if(piece.getType() === 'king'){ //se è un re
                         color = piece.getColor()
                     }
@@ -140,6 +140,17 @@ export class Board {
             })
         })
         return color
+    }
+
+    getAttackedSquaresByColor(color){
+        let attackedSquares = []
+        this.pieceList.forEach(piece => { //per ciascun pezzo
+            if(piece.getColor() === color){
+                const possibleMoves = piece.getPossibleMoves(false) //controlla dove può andare il pezzo
+                possibleMoves.forEach(move => attackedSquares.push(move.newSquare))
+            }
+        })
+        return attackedSquares
     }
 
     getMate(){
@@ -151,17 +162,17 @@ export class Board {
         this.pieceList.forEach(piece => { //per ciascun pezzo
             if(piece.getColor() === color){
                 const tmpMoves = piece.getPossibleMoves() //controlla dove può andare il pezzo
-                const newTmpMoves = tmpMoves.filter(square => { //per ciascuna casella
+                const newTmpMoves = tmpMoves.filter(move => { //per ciascuna casella
                     const virtualBoard = new Board()
                     const oldSquare = piece.getSquare()
                     const oldRow = oldSquare.getRow()
                     const oldCol = oldSquare.getColumn()
-                    const newRow = square.getRow()
-                    const newCol = square.getColumn()
+                    const newRow = move.newSquare.getRow()
+                    const newCol = move.newSquare.getColumn()
                     virtualBoard.changeBoard(this.getpieceList())
                     const virtualPiece = virtualBoard.findPieceByRowCol(oldRow, oldCol) //questo pezzo nella nuova scacchiera
                     const virtualNewSquare = virtualBoard.findSquare(newRow, newCol) //il pezzo a cui si deve spostare nella nuova scacchiera
-                    virtualPiece.handleMove(virtualNewSquare) //muove il pezzo nella nuova scacchiera (handleMove per non controllare gli scacchi prima di muovere)
+                    virtualPiece.handleMove({'newSquare': virtualNewSquare}) //muove il pezzo nella nuova scacchiera (handleMove per non controllare gli scacchi prima di muovere)
                     const stillCheck = virtualBoard.getPlayerColorUnderCheck() === color //guarda se è ancora scacco dopo aver mosso
                     return !stillCheck //se non è scacco tiene la mossa
                 })
