@@ -6,7 +6,6 @@ import Game from "./Components/Game";
 import useWebSocket from 'react-use-websocket'
 
 const WS_URL = 'ws://localhost:5000'
-
 function App() {
     //websocket setup
     const {sendJsonMessage, lastJsonMessage} = useWebSocket(WS_URL, {})

@@ -141,4 +141,38 @@ export class Board {
         })
         return color
     }
+
+    getMate(){
+        const color = this.getPlayerColorUnderCheck()
+        if(!color){
+            return null
+        }
+        let possibleMoves = []
+        this.pieceList.forEach(piece => { //per ciascun pezzo
+            if(piece.getColor() === color){
+                const tmpMoves = piece.getPossibleMoves() //controlla dove può andare il pezzo
+                const newTmpMoves = tmpMoves.filter(square => { //per ciascuna casella
+                    const virtualBoard = new Board()
+                    const oldSquare = piece.getSquare()
+                    const oldRow = oldSquare.getRow()
+                    const oldCol = oldSquare.getColumn()
+                    const newRow = square.getRow()
+                    const newCol = square.getColumn()
+                    virtualBoard.changeBoard(this.getpieceList())
+                    const virtualPiece = virtualBoard.findPieceByRowCol(oldRow, oldCol) //questo pezzo nella nuova scacchiera
+                    const virtualNewSquare = virtualBoard.findSquare(newRow, newCol) //il pezzo a cui si deve spostare nella nuova scacchiera
+                    virtualPiece.handleMove(virtualNewSquare) //muove il pezzo nella nuova scacchiera (handleMove per non controllare gli scacchi prima di muovere)
+                    const stillCheck = virtualBoard.getPlayerColorUnderCheck() === color //guarda se è ancora scacco dopo aver mosso
+                    return !stillCheck //se non è scacco tiene la mossa
+                })
+                possibleMoves = possibleMoves.concat(newTmpMoves)
+            }
+        })
+        if(possibleMoves.length === 0){
+            console.log(`${color}, has no moves. Mate`)
+            return color
+        } else {
+            return null
+        }
+    }
 }

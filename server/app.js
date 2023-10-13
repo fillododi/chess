@@ -253,14 +253,16 @@ wsServer.on("request", request => { //quando il client manda richieste al socket
                     if(success){
                         console.log(game.active_player.color, "moved his", pieceType, "to", newCol, newRow)
                         game.history.push(result.move) //aggiunge la mossa allo storico
-                        if(game.active_player.color === 'black'){
-                            game.turn += 1 //aumenta il numero del turno se ha mosso il nero
-                            console.log("It's now turn", game.turn)
-                        }
-                        game.board.print()
-                        game.active_player = game.clients.find(client => client != game.active_player) //passa il turno
-                        
                         const boardToSend = game.board.json()
+                        //controlla se è matto
+                        const playerUnderMate = game.board.getMate()
+                        if(!playerUnderMate){
+                            if(game.active_player.color === 'black'){
+                                game.turn += 1 //aumenta il numero del turno se ha mosso il nero
+                                console.log("It's now turn", game.turn)
+                            }
+                            game.active_player = game.clients.find(client => client != game.active_player) //passa il turno
+                        }
                         const payload = { //risposta che verrà data per fare iniziare la partita
                             "method": "move",
                             "game": {
@@ -271,7 +273,8 @@ wsServer.on("request", request => { //quando il client manda richieste al socket
                                 "turn": game.turn,
                                 "board": boardToSend,
                                 "history": game.history,
-                                "chat": game.chat
+                                "chat": game.chat,
+                                "checkmate": playerUnderMate? playerUnderMate: ''
                             }
                         }
                         game.clients.forEach(client => { //invia la risposta a tutti i client associati alla partita

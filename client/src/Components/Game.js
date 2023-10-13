@@ -31,7 +31,15 @@ const Game = ({clientId, gameId, game, leavingPlayer, setLeavingPlayer, setShowG
         if(game.clients){
             setPlayerColor(game.clients.find(client => client.clientId === clientId).color)
         }
+        if(game.checkmate){
+            setFinishedGame(true)
+            setFinishedGameText('Checkmate. ' + game.checkmate + ' has lost')
+        }
     }, [game])
+
+    useEffect(()=>{
+        setIsActivePlayer(false)
+    }, [finishedGame])
 
     const handleQuit = () => { //torna alla lobby, quittando la partita se non è finita
         if(!finishedGame){

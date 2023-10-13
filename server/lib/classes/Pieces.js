@@ -26,25 +26,22 @@ class Piece {
     move(square){
         let possibleMoves = this.getPossibleMoves()
         console.log('possible moves are', possibleMoves.map(square => square.getPosition()))
-        if(square.getBoard().getPlayerColorUnderCheck() === this.color){ //se si è in scacco
-            console.log('but player is under check')
-            const newMoves = possibleMoves.filter(square => {
-                const virtualBoard = new Board() //crea nuova scacchiera virtuale
-                const oldSquare = this.getSquare() //casella di questo pezzo prima della mossa
-                const oldRow = oldSquare.getRow()
-                const oldCol = oldSquare.getColumn()
-                const newRow = square.getRow()
-                const newCol = square.getColumn()
-                virtualBoard.changeBoard(oldSquare.getBoard().getpieceList())//copia questa scacchiera nella nuova
-                const virtualPiece = virtualBoard.findPieceByRowCol(oldRow, oldCol) //questo pezzo nella nuova scacchiera
-                const virtualNewSquare = virtualBoard.findSquare(newRow, newCol) //il pezzo a cui si deve spostare nella nuova scacchiera
-                virtualPiece.handleMove(virtualNewSquare) //muove il pezzo nella nuova scacchiera (handleMove per non controllare gli scacchi prima di muovere)
-                const stillCheck = virtualBoard.getPlayerColorUnderCheck() === this.color //guarda se è ancora scacco dopo aver mosso
-                return !stillCheck //se non è più scacco tiene la mossa
-            })
-            possibleMoves = newMoves
-            console.log('so possible moves are now', possibleMoves.map(square => square.getPosition()))
-        }
+        const newMoves = possibleMoves.filter(square => {
+            const virtualBoard = new Board() //crea nuova scacchiera virtuale
+            const oldSquare = this.getSquare() //casella di questo pezzo prima della mossa
+            const oldRow = oldSquare.getRow()
+            const oldCol = oldSquare.getColumn()
+            const newRow = square.getRow()
+            const newCol = square.getColumn()
+            virtualBoard.changeBoard(oldSquare.getBoard().getpieceList())//copia questa scacchiera nella nuova
+            const virtualPiece = virtualBoard.findPieceByRowCol(oldRow, oldCol) //questo pezzo nella nuova scacchiera
+            const virtualNewSquare = virtualBoard.findSquare(newRow, newCol) //il pezzo a cui si deve spostare nella nuova scacchiera
+            virtualPiece.handleMove(virtualNewSquare) //muove il pezzo nella nuova scacchiera (handleMove per non controllare gli scacchi prima di muovere)
+            const stillCheck = virtualBoard.getPlayerColorUnderCheck() === this.color //guarda se è ancora scacco dopo aver mosso
+            return !stillCheck //se non è più scacco tiene la mossa
+        })
+        possibleMoves = newMoves
+        console.log('filtering out checks possible moves are now', possibleMoves.map(square => square.getPosition()))
         if(possibleMoves.includes(square)){
             this.handleMove(square)
             return true
