@@ -20,38 +20,44 @@ function App() {
 
     //quando si ricevono messaggi dal server
     useEffect(()=>{
-        if(lastJsonMessage){
-            const method = lastJsonMessage.method
-            if(method === 'connect'){ //messaggio che arriva quando il client si connette, ottenendo il client id
-                setClientId(lastJsonMessage.clientId)
-                console.log('connected')
-            }
-            if(method === 'join'){
-                setGameId(lastJsonMessage.gameId)
-                setGame(lastJsonMessage.game)
-                setShowLobby(false)
-                setShowGame(true)
-            }
-            if(method === 'leave'){ //notifica che qualcuno è uscito dalla partita
-                setLeavingPlayer(lastJsonMessage.leavingPlayer)
-            }
-            if(method === 'draw'){
-                const draw_offer = lastJsonMessage.draw_offer
-                setGame({...game, "draw_offer": draw_offer})
-            }
-            if(method === 'chat'){
-                setGame({...game, "chat": lastJsonMessage.chat})
-            }
-            if(method === 'start'){
-                setGame(lastJsonMessage.game)
-                setGameId(lastJsonMessage.gameId)
-            }
-            if(method === 'move'){
-                setGame(lastJsonMessage.game)
-            }
-            if(method === 'getGames'){
-                setGames(lastJsonMessage.games)
-            }
+        if (!lastJsonMessage) {
+          return
+        }
+        const {method} = lastJsonMessage
+        switch(method) {
+            case 'connect':
+                setClientId(lastJsonMessage.clientId);
+                console.log('connected');
+                break;
+            case 'join':
+                setGameId(lastJsonMessage.gameId);
+                setGame(lastJsonMessage.game);
+                setShowLobby(false);
+                setShowGame(true);
+                break;
+            case 'leave':
+                setLeavingPlayer(lastJsonMessage.leavingPlayer);
+                break;
+            case 'draw':
+                const {draw_offer} = lastJsonMessage;
+                setGame({...game, "draw_offer": draw_offer});
+                break;
+            case 'chat':
+                setGame({...game, "chat": lastJsonMessage.chat});
+                break;
+            case 'start':
+                setGame(lastJsonMessage.game);
+                setGameId(lastJsonMessage.gameId);
+                break;
+            case 'move':
+                setGame(lastJsonMessage.game);
+                break;
+            case 'getGames':
+                setGames(lastJsonMessage.games);
+                break;
+            default:
+                console.error(`Unrecognized method! Received: ${method}`);
+                break;
         }
     }, [lastJsonMessage])
 
