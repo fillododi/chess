@@ -13,7 +13,7 @@ function App() {
     const [showLobby, setShowLobby] = useState(true)
     const [showGame, setShowGame] = useState(false)
     const [clientId, setClientId] = useState(null)
-    const [gameId, setGameId] = useState(null)
+    const [gameId, setGameId] = useState('') // Input field should not be null
     const [game, setGame] = useState(null)
     const [leavingPlayer, setLeavingPlayer] = useState(null)
     const [games, setGames] = useState([])

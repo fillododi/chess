@@ -42,15 +42,13 @@ const Lobby = ({clientId, gameId, setGameId, sendJsonMessage, games}) => {
                     "clientId": clientId,
                     "gameId": gameId,
                     "color": selectedColor
-                }
-                console.log(payload)
+                };
                 sendJsonMessage(payload) //invia richiesta
             }
             }>Join Game</button>
         </div>
         <h4 className='text-xl'>or <span className={'text-blue-600 text-bold'}>Choose a game from the list</span> </h4>
-        {games != [] && <div className={'grid grid-cols-3'}>
-            {console.log(games)}
+        {games.length > 0 && <div className={'grid grid-cols-3'}>
             {games.map(game => {
                 const opponentColor = game.client.color
                 let playerColor
@@ -63,7 +61,7 @@ const Lobby = ({clientId, gameId, setGameId, sendJsonMessage, games}) => {
                 if(opponentColor === 'random'){
                     playerColor = 'random'
                 }
-                return <div className={'border-blue-600 border-2 flex flex-col justify-center p-4 gap-y-2'}>
+                return <div key={game.gameId} className={'border-blue-600 border-2 flex flex-col justify-center p-4 gap-y-2'}>
                     <p>Game: {game.gameId}</p>
                     <p>Opponent: {game.client.clientId}</p>
                     <p>You will play as {playerColor}</p>
@@ -73,7 +71,6 @@ const Lobby = ({clientId, gameId, setGameId, sendJsonMessage, games}) => {
                             "clientId": clientId,
                             "gameId": game.gameId
                         }
-                        console.log(payload)
                         sendJsonMessage(payload) //invia richiesta
                     }}>Join Game</button>
                 </div>
