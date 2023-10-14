@@ -7,63 +7,72 @@ const getSquare = (selectedPiece) => {
 const getSquareUp = (square) => {
     if (square){
         return {'row': square.row + 1, 'col': charToNum(square.col)};
-    } else return null;
+    }
+    return null;
 }
 
 const get2SquareUp = (square) => {
     if (square){
         return {'row': square.row + 2, 'col': charToNum(square.col)}
-    } else return null;
+    }
+    return null;
 }
 
 const getSquareUpRight = (square) => {
     if (square){
         return {'row': square.row + 1, 'col': charToNum(square.col) + 1};
-    } else return null;
+    }
+    return null;
 }
 
 const getSquareUpLeft = (square) => {
     if (square){
         return {'row': square.row + 1, 'col': charToNum(square.col) - 1};
-    } else return null;
+    }
+    return null;
 }
 
 const getSquareDown = (square) => {
     if (square){
         return {'row': square.row - 1, 'col': charToNum(square.col)};
-    } else return null;
+    }
+    return null;
 }
 
 const get2SquareDown = (square) => {
     if (square){
         return {'row': square.row - 2, 'col': charToNum(square.col)}
-    } else return null;
-        
+    }
+    return null;
 }
 
 const getSquareDownLeft = (square) => {
     if (square){
         return {'row': square.row - 1, 'col': charToNum(square.col) - 1};
-    } else return null;
+    }
+    return null;
 }
 
 const getSquareDownRight = (square) => {
     if (square){
         return {'row': square.row - 1, 'col': charToNum(square.col) + 1};
-    } else return null;
+    }
+    return null;
 }
 
 
 const getSquareRight = (square) => {
     if (square){
         return {'row': square.row, 'col': charToNum(square.col) + 1}
-    } else return null;
+    }
+    return null;
 }
 
 const getSquareLeft = (square) => {
     if (square){
         return {'row': square.row, 'col': charToNum(square.col) - 1}
-    } else return null;
+    }
+    return null;
 }
 
 
@@ -75,12 +84,11 @@ export const trajectoryPawn = (selectedPiece, board) => {
     const square = getSquare(selectedPiece);
     if(selectedPiece.color === 'white'){
         //move up
-        const squareUp = getSquareUp(square);        
+        const squareUp = getSquareUp(square);
         if(!findPiece(board, squareUp.row, squareUp.col)){
             possibleMoves.push(squareUp)
             //move up by 2
             if (square.row === 2){
-
                 const square2Ups = get2SquareUp(square);
                 if(!findPiece(board, square2Ups.row, square2Ups.col)){
                     possibleMoves.push(square2Ups)
