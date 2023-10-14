@@ -28,17 +28,17 @@ const Board = ({game, playerColor, isActivePlayer, sendJsonMessage}) => {
             case 'bishop':
                 setAvailableSquares(trajectoryBishop(selectedPiece, game.board));
                 break;
-                case 'queen':
+            case 'queen':
                 setAvailableSquares([...trajectoryRook(selectedPiece, game.board), ...trajectoryBishop(selectedPiece, game.board)]);
                 break;
-                case 'king':
-                    setAvailableSquares(trajectoryKing(selectedPiece, game.board));
-                    break;
-                    default:
-                        break;
-                    }
-    } 
-                
+            case 'king':
+                setAvailableSquares(trajectoryKing(selectedPiece, game.board));
+                break;
+            default:
+                break;
+        }
+    }
+
     useEffect(trajectoryHandler, [selectedPiece]);
 
 
@@ -118,17 +118,17 @@ const Board = ({game, playerColor, isActivePlayer, sendJsonMessage}) => {
         const alphabet = "abcdefgh";
         const newCol = alphabet[col - 1];
         const piece = getPieceByCoords(row, newCol);
-        if (!selectedPiece){
+        if (!selectedPiece) {
             if (piece && piece.color === playerColor && isActivePlayer){
                 setSelectedPiece(piece);
             }
-        } else { // HO GIA SELEZIONATO UN PEZZO
-            if (piece && piece.color === selectedPiece.color) { // SELEZIONO UN PEZZO DELLA MIA SQUADRA
-                setSelectedPiece(piece);
-            } else{
-                handleMove(row, newCol)
-                setSelectedPiece(null); // DESELEZIONE           
-            } 
+        }
+        else if (piece && piece.color === selectedPiece.color) { // SELEZIONO UN PEZZO DELLA MIA SQUADRA
+            setSelectedPiece(piece);
+        }
+        else {
+            handleMove(row, newCol)
+            setSelectedPiece(null); // DESELEZIONE           
         }
     }
     
