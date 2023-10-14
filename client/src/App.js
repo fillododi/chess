@@ -40,10 +40,14 @@ function App() {
                 break;
             case 'draw':
                 const {draw_offer} = lastJsonMessage;
-                setGame({...game, "draw_offer": draw_offer});
+                setGame((game) => {
+                    return {...game, "draw_offer": draw_offer};
+                });
                 break;
             case 'chat':
-                setGame({...game, "chat": lastJsonMessage.chat});
+                setGame((game) => {
+                    return {...game, "chat": lastJsonMessage.chat};
+                });
                 break;
             case 'start':
                 setGame(lastJsonMessage.game);
