@@ -88,6 +88,8 @@ const Board = ({game, playerColor, isActivePlayer, sendJsonMessage}) => {
                         return <FaRegChessQueen className="text-5xl pointer-events-none"/>
                     case 'king':
                         return <FaRegChessKing className="text-5xl pointer-events-none"/>
+                    default:
+                        console.error(`Unrecognized piece type! Got: ${piece.type}`);
                 }
             }
             if (color === 'black'){
@@ -104,6 +106,8 @@ const Board = ({game, playerColor, isActivePlayer, sendJsonMessage}) => {
                         return <FaChessQueen className="text-5xl pointer-events-none"/>
                     case 'king':
                         return <FaChessKing className="text-5xl pointer-events-none"/>
+                    default:
+                        console.error(`Unrecognized piece type! Got: ${piece.type}`);
                 }
             }
         }
