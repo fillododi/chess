@@ -13,7 +13,7 @@ const Game = ({clientId, gameId, game, leavingPlayer, setLeavingPlayer, setShowG
             setFinishedGame(true)
             setFinishedGameText(`${leavingPlayer} left the game`)
         }
-    }, [leavingPlayer])
+    }, [leavingPlayer, clientId])
 
     useEffect(()=>{
         if(game.draw_offer.receiving_client){
@@ -35,7 +35,7 @@ const Game = ({clientId, gameId, game, leavingPlayer, setLeavingPlayer, setShowG
             setFinishedGame(true)
             setFinishedGameText('Checkmate. ' + game.checkmate + ' has lost')
         }
-    }, [game])
+    }, [game, clientId])
 
     useEffect(()=>{
         setIsActivePlayer(false)
