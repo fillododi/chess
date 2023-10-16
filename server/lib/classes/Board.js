@@ -109,13 +109,12 @@ export class Board {
 
     json(){
         const alphabet = "abcdefgh"
-        const data = this.pieceList.map(piece => {return { //sostituisce numeri colonne con lettere
+        return this.pieceList.map(piece => {return { //sostituisce numeri colonne con lettere
             "color": piece.color,
             "type": piece.type,
             "column": piece.getSquare().getColumn(),
             "row": piece.getSquare().getRow()
-        }})
-        return data
+        }});
     }
 
     changeBoard(newPieceList){

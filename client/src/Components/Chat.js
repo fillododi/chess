@@ -21,8 +21,8 @@ const Chat = ({clientId, gameId, sendJsonMessage, chat}) => {
 
     return <div className={'flex flex-col border-gray-400 border-2 gap-y-4 max-w-md'}>
         <div>
-            {chat.map((message)=>{
-                return <p>{message.clientId} - {message.message}</p>
+            {chat.map((message, key)=>{
+                return <p key={key}>{message.clientId} - {message.message}</p>
             })}
         </div>
         <div className={'flex flex-row justify-evenly mb-0'}>

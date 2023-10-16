@@ -28,17 +28,17 @@ const Board = ({game, playerColor, isActivePlayer, sendJsonMessage}) => {
             case 'bishop':
                 setAvailableSquares(trajectoryBishop(selectedPiece, game.board));
                 break;
-                case 'queen':
+            case 'queen':
                 setAvailableSquares([...trajectoryRook(selectedPiece, game.board), ...trajectoryBishop(selectedPiece, game.board)]);
                 break;
-                case 'king':
-                    setAvailableSquares(trajectoryKing(selectedPiece, game.board));
-                    break;
-                    default:
-                        break;
-                    }
-    } 
-                
+            case 'king':
+                setAvailableSquares(trajectoryKing(selectedPiece, game.board));
+                break;
+            default:
+                break;
+        }
+    }
+
     useEffect(trajectoryHandler, [selectedPiece]);
 
 
@@ -88,6 +88,8 @@ const Board = ({game, playerColor, isActivePlayer, sendJsonMessage}) => {
                         return <FaRegChessQueen className="text-5xl pointer-events-none"/>
                     case 'king':
                         return <FaRegChessKing className="text-5xl pointer-events-none"/>
+                    default:
+                        console.error(`Unrecognized piece type! Got: ${piece.type}`);
                 }
             }
             if (color === 'black'){
@@ -104,6 +106,8 @@ const Board = ({game, playerColor, isActivePlayer, sendJsonMessage}) => {
                         return <FaChessQueen className="text-5xl pointer-events-none"/>
                     case 'king':
                         return <FaChessKing className="text-5xl pointer-events-none"/>
+                    default:
+                        console.error(`Unrecognized piece type! Got: ${piece.type}`);
                 }
             }
         }
@@ -118,17 +122,17 @@ const Board = ({game, playerColor, isActivePlayer, sendJsonMessage}) => {
         const alphabet = "abcdefgh";
         const newCol = alphabet[col - 1];
         const piece = getPieceByCoords(row, newCol);
-        if (!selectedPiece){
+        if (!selectedPiece) {
             if (piece && piece.color === playerColor && isActivePlayer){
                 setSelectedPiece(piece);
             }
-        } else { // HO GIA SELEZIONATO UN PEZZO
-            if (piece && piece.color === selectedPiece.color) { // SELEZIONO UN PEZZO DELLA MIA SQUADRA
-                setSelectedPiece(piece);
-            } else{
-                handleMove(row, newCol)
-                setSelectedPiece(null); // DESELEZIONE           
-            } 
+        }
+        else if (piece && piece.color === selectedPiece.color) { // SELEZIONO UN PEZZO DELLA MIA SQUADRA
+            setSelectedPiece(piece);
+        }
+        else {
+            handleMove(row, newCol)
+            setSelectedPiece(null); // DESELEZIONE           
         }
     }
     
@@ -136,9 +140,9 @@ const Board = ({game, playerColor, isActivePlayer, sendJsonMessage}) => {
     return <div className={'flex flex-col'}>
         {playerColor === 'white'?
          [8,7,6,5,4,3,2,1].map(row => {
-            return <div className='flex flex-row'>
+            return <div className='flex flex-row' key={row}>
                 {[1, 2, 3, 4, 5, 6, 7, 8].map(col => {
-                    return <div className={`${(row+col)%2? 'bg-white' : 'bg-green-600'} w-16 h-16 hover:bg-green-400 flex justify-center items-center`}
+                    return <div key={col} className={`${(row+col)%2? 'bg-white' : 'bg-green-600'} w-16 h-16 hover:bg-green-400 flex justify-center items-center`}
                     onClick={handleClick.bind(this, row, col)}>
                         {
                             <div className={`pointer-events-none w-full h-full flex justify-center items-center ${availableSquares.some(e => e.row === row && e.col === col) && 'bg-blue-200'}`}>
@@ -151,9 +155,9 @@ const Board = ({game, playerColor, isActivePlayer, sendJsonMessage}) => {
          }) 
          :
          [1,2,3,4,5,6,7,8].map(row => {
-            return <div className='flex flex-row'>
+            return <div key={row} className='flex flex-row'>
                 {[8,7,6,5,4,3,2,1].map(col => {
-                    return <div className={`${(row+col)%2? 'bg-white' : 'bg-green-600'} w-16 h-16 hover:bg-green-400 flex justify-center items-center`}
+                    return <div key={col} className={`${(row+col)%2? 'bg-white' : 'bg-green-600'} w-16 h-16 hover:bg-green-400 flex justify-center items-center`}
                     onClick={handleClick.bind(this, row, col)}>
                         {
                             <div className={`pointer-events-none w-full h-full flex justify-center items-center ${availableSquares.some(e => e.row === row && e.col === col) && 'bg-blue-200'}`}>
