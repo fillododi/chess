@@ -50,7 +50,7 @@ const Lobby = ({clientId, gameId, setGameId, sendJsonMessage, games}) => {
         <h4 className='text-xl'>or <span className={'text-blue-600 text-bold'}>Choose a game from the list</span> </h4>
         {games.length > 0 && <div className={'grid grid-cols-3'}>
             {games.map(game => {
-                const opponentColor = game.client.color
+                const opponentColor = game.player.color
                 let playerColor
                 if(opponentColor === 'white'){
                     playerColor = 'black'
@@ -63,7 +63,7 @@ const Lobby = ({clientId, gameId, setGameId, sendJsonMessage, games}) => {
                 }
                 return <div key={game.gameId} className={'border-blue-600 border-2 flex flex-col justify-center p-4 gap-y-2'}>
                     <p>Game: {game.gameId}</p>
-                    <p>Opponent: {game.client.clientId}</p>
+                    <p>Opponent: {game.player.clientId}</p>
                     <p>You will play as {playerColor}</p>
                     <button className={'border-blue-600 border-2 rounded-md p-2 hover:bg-blue-600 hover:text-white'} onClick={()=>{
                         const payload = { //richiesta che verrà mandata

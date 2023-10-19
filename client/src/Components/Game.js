@@ -28,8 +28,8 @@ const Game = ({clientId, gameId, game, leavingPlayer, setLeavingPlayer, setShowG
         if(game.active_player){
             setIsActivePlayer(game.active_player.clientId === clientId)
         }
-        if(game.clients){
-            setPlayerColor(game.clients.find(client => client.clientId === clientId).color)
+        if(game.players){
+            setPlayerColor(game.players.find(player => player.clientId === clientId).color)
         }
         if(game.checkmate){
             setFinishedGame(true)
@@ -79,6 +79,10 @@ const Game = ({clientId, gameId, game, leavingPlayer, setLeavingPlayer, setShowG
             <div className={'flex flex-col gap-y-2'}>
                 <h3 className={'text-lg'}>Connected players:</h3>
                 <div className={"flex flex-row gap-x-2 justify-evenly"}>
+                    {game.players.map(player =>
+                        <div key={player.clientId} className={'border-2 border-gray-800 border-dashed p-4'}>
+                            <p>{player.clientId}</p>
+                            <p>{player.color}</p>
                     {game.clients.map(client =>
                         <div key={client.clientId} className={'border-2 border-gray-800 border-dashed p-4'}>
                             <p>{client.clientId}</p>
