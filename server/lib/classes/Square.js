@@ -14,6 +14,13 @@ export class Square {
         return this.board.findPiece(this)
     }
 
+    getColor(){
+        if((this.col + this.row)%2){
+            return 'black'
+        }
+        return 'white'
+    }
+
     getRow(){
         return this.row
     }

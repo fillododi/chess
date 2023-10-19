@@ -515,14 +515,18 @@ export class King extends Piece{
                 if(square2Left){
                     const pieceOnSquare2Left = square2Left.getPiece()
                     if(!pieceOnSquare2Left &&!board.getAttackedSquaresByColor(otherColor).includes(square2Left)){
-                        const square4Left = square2Left.getSquareLeft().getSquareLeft()
-                        const pieceOnSquare4Left = square4Left.getPiece()
-                        if(square4Left && pieceOnSquare4Left && pieceOnSquare4Left.type === 'rook' && pieceOnSquare4Left.color === this.color && pieceOnSquare4Left.hasMoved === false){
-                            possibleMoves.push({'newSquare': square2Left, 'moveType': {
-                                'type': 'castle',
-                                'rook': pieceOnSquare4Left,
-                                'newRookPosition': squareLeft
-                            }})
+                        if(square2Left.getSquareLeft()){
+                            const square4Left = square2Left.getSquareLeft().getSquareLeft()
+                            if(square4Left){
+                                const pieceOnSquare4Left = square4Left.getPiece()
+                                if(square4Left && pieceOnSquare4Left && pieceOnSquare4Left.type === 'rook' && pieceOnSquare4Left.color === this.color && pieceOnSquare4Left.hasMoved === false){
+                                    possibleMoves.push({'newSquare': square2Left, 'moveType': {
+                                            'type': 'castle',
+                                            'rook': pieceOnSquare4Left,
+                                            'newRookPosition': squareLeft
+                                        }})
+                                }
+                            }
                         }
                     }
                 }

@@ -121,6 +121,36 @@ export class Game {
         return false
     }
 
+    checkInsufficientMaterial(){ //there must be only kings, max one knight, no bishops if there's a knight, otherwise both bishops are on same colored squares
+        const pawns = this.board.getPieceListByType("pawn")
+        if(pawns.length){
+            return false
+        }
+        const queens = this.board.getPieceListByType("queen")
+        if(queens.length){
+            return false
+        }
+        const rooks = this.board.getPieceListByType("rook")
+        if(rooks.length){
+            return false
+        }
+        const bishops = this.board.getPieceListByType("bishop")
+        const knights = this.board.getPieceListByType("knight")
+        if(bishops.length && knights.length){
+            return false
+        }
+        if(knights.length > 1){
+            return false
+        }
+        if(bishops.length > 2){
+            return false
+        }
+        if(bishops.length === 2){
+            return bishops[0].square.getColor() === bishops[1].square.getColor()
+        }
+        return true
+    }
+
     checkDraw(){
         if(this.checkStalemate()){
             return "stalemate"
@@ -130,6 +160,9 @@ export class Game {
         }
         if(this.check50Moves()){
             return "50 moves rule"
+        }
+        if(this.checkInsufficientMaterial()){
+            return "insufficient material"
         }
         return false
     }

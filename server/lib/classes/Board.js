@@ -7,7 +7,6 @@ export class Board {
         this.game = game
         this.squares = []
         this.pieceList = []
-        this.squares = []
         this.counter50Moves = 0
         const alphabet = "abcdefgh"
         for(let i = 1; i <= 8; i++){
@@ -57,6 +56,10 @@ export class Board {
                 }
             }
         })
+    }
+
+    getPieceListByType = (type) => {
+        return this.pieceList.filter(piece => piece.getType() === type)
     }
 
     getpieceList(){
