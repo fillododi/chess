@@ -154,14 +154,10 @@ export class Board {
         return attackedSquares
     }
 
-    getMate(){
-        const color = this.getPlayerColorUnderCheck()
-        if(!color){
-            return null
-        }
+    getPossibleMovesByColor(color){
         let possibleMoves = []
         this.pieceList.forEach(piece => { //per ciascun pezzo
-            if(piece.getColor() === color){
+            if(piece.color === color){
                 const tmpMoves = piece.getPossibleMoves() //controlla dove può andare il pezzo
                 const newTmpMoves = tmpMoves.filter(move => { //per ciascuna casella
                     const virtualBoard = new Board(this.game)
@@ -180,6 +176,15 @@ export class Board {
                 possibleMoves = possibleMoves.concat(newTmpMoves)
             }
         })
+        return possibleMoves
+    }
+
+    getMate(){
+        const color = this.getPlayerColorUnderCheck()
+        if(!color){
+            return null
+        }
+        const possibleMoves = this.getPossibleMovesByColor(color)
         if(possibleMoves.length === 0){
             console.log(`${color}, has no moves. Mate`)
             return color

@@ -35,6 +35,10 @@ const Game = ({clientId, gameId, game, leavingPlayer, setLeavingPlayer, setShowG
             setFinishedGame(true)
             setFinishedGameText('Checkmate. ' + game.checkmate + ' has lost')
         }
+        if(game.draw){
+            setFinishedGame(true)
+            setFinishedGameText('Draw. ' + game.draw)
+        }
     }, [game, clientId])
 
     useEffect(()=>{

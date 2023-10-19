@@ -28,4 +28,8 @@ export class Client{
             "game": this.game? this.game.json(): null
         }
     }
+
+    leaveGame(){
+        this.game = null
+    }
 }

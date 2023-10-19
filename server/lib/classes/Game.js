@@ -88,4 +88,20 @@ export class Game {
         }
         return this.history[this.history.length - 1]
     }
+
+    checkStalemate(){
+        const activePlayerPossibleMoves = this.board.getPossibleMovesByColor(this.active_player.color)
+        if(activePlayerPossibleMoves.length === 0 && !this.board.getPlayerColorUnderCheck()){
+            return true
+        } else {
+            return false
+        }
+    }
+
+    checkDraw(){
+        if(this.checkStalemate()){
+            return "stalemate"
+        }
+        return false
+    }
 }

@@ -192,6 +192,11 @@ wsServer.on("request", request => { //quando il client manda richieste al socket
                             }
                             game.active_player = game.players.find(player => player != game.active_player) //passa il turno
                         }
+                        //controlla parità
+                        const draw = game.checkDraw()
+                        if(draw){
+                            console.log("PARI!!!!!!")
+                        }
                         const payload = { //risposta
                             "method": "move",
                             "game": {
@@ -204,12 +209,19 @@ wsServer.on("request", request => { //quando il client manda richieste al socket
                                 "board": boardToSend,
                                 "history": game.history,
                                 "chat": game.chat,
-                                "checkmate": playerUnderMate? playerUnderMate: ''
+                                "checkmate": playerUnderMate? playerUnderMate: '',
+                                "draw": draw
                             }
                         }
                         game.clients.forEach(client => { //invia la risposta a tutti i client associati alla partita
                             client.connection.send(JSON.stringify(payload))
                         })
+                        if(playerUnderMate || draw){
+                            game.clients.forEach(client => client.leaveGame())
+                            delete games[gameId] //rimuove la partita dall'elenco
+                            console.log("game ", gameId, " has finished")
+                            broadcastGameList(clients, games)
+                        }
                     }
                 }
             }

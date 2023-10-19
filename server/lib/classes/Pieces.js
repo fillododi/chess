@@ -491,13 +491,15 @@ export class King extends Piece{
                     const pieceOnSquare2Right = square2Right.getPiece()
                     if(!pieceOnSquare2Right && !board.getAttackedSquaresByColor(otherColor).includes(square2Right)){
                         const square3Right = square2Right.getSquareRight()
-                        const pieceOnSquare3Right = square3Right.getPiece()
-                        if(pieceOnSquare3Right && pieceOnSquare3Right.type === 'rook' && pieceOnSquare3Right.color === this.color && pieceOnSquare3Right.hasMoved === false){
-                            possibleMoves.push({'newSquare': square2Right, 'moveType': {
-                                    'type': 'castle',
-                                    'rook': pieceOnSquare3Right,
-                                    'newRookPosition': squareRight
-                            }})
+                        if(square3Right){
+                            const pieceOnSquare3Right = square3Right.getPiece()
+                            if(pieceOnSquare3Right && pieceOnSquare3Right.type === 'rook' && pieceOnSquare3Right.color === this.color && pieceOnSquare3Right.hasMoved === false){
+                                possibleMoves.push({'newSquare': square2Right, 'moveType': {
+                                        'type': 'castle',
+                                        'rook': pieceOnSquare3Right,
+                                        'newRookPosition': squareRight
+                                    }})
+                            }
                         }
                     }
                 }
