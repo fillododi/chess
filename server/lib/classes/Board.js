@@ -3,7 +3,9 @@ import {Square} from "./Square.js";
 
 
 export class Board {
-    constructor(){
+    constructor(game){
+        this.game = game
+        this.squares = []
         this.pieceList = []
         this.squares = []
         const alphabet = "abcdefgh"
@@ -162,7 +164,7 @@ export class Board {
             if(piece.getColor() === color){
                 const tmpMoves = piece.getPossibleMoves() //controlla dove può andare il pezzo
                 const newTmpMoves = tmpMoves.filter(move => { //per ciascuna casella
-                    const virtualBoard = new Board()
+                    const virtualBoard = new Board(this.game)
                     const oldSquare = piece.getSquare()
                     const oldRow = oldSquare.getRow()
                     const oldCol = oldSquare.getColumn()

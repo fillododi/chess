@@ -71,7 +71,7 @@ export class Game {
     start(){
         this.active_player = this.players.find(player => player.color === 'white')
         this.turn = 1
-        this.board = new Board()
+        this.board = new Board(this)
         const payload = {
             "method": "start",
             "game": this.json(),
@@ -80,5 +80,12 @@ export class Game {
         this.clients.forEach(client => {
             client.connection.send(JSON.stringify(payload))
         })
+    }
+
+    getLastMove(){
+        if(this.history.length === 0){
+            return null
+        }
+        return this.history[this.history.length - 1]
     }
 }

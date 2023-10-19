@@ -27,7 +27,7 @@ class Piece {
         let possibleMoves = this.getPossibleMoves()
         console.log('possible moves are', possibleMoves.map(move => move.newSquare.getPosition()))
         const newMoves = possibleMoves.filter(move => {
-            const virtualBoard = new Board() //crea nuova scacchiera virtuale
+            const virtualBoard = new Board(square.board.game) //crea nuova scacchiera virtuale
             const oldSquare = this.getSquare() //casella di questo pezzo prima della mossa
             const oldRow = oldSquare.getRow()
             const oldCol = oldSquare.getColumn()
@@ -48,6 +48,11 @@ class Piece {
                 const rookToMove = move.moveType.rook
                 const newRookPosition = move.moveType.newRookPosition
                 rookToMove.handleMove({'newSquare': newRookPosition})
+            }
+            if(move.moveType && move.moveType.type === 'enpassant'){
+                console.log(move)
+                const pawnToKill = move.moveType.otherPawn
+                this.square.board.killPiece(pawnToKill)
             }
             this.handleMove(move)
             return true
@@ -77,6 +82,7 @@ export class Pawn extends Piece{
     getPossibleMoves(specialMoves=true) {
         let possibleMoves = []
         const board = this.square.getBoard()
+        const lastMove = board.game.getLastMove()
         if(this.color === 'white'){
             //move up
             const squareUp = this.square.getSquareUp()
@@ -92,15 +98,41 @@ export class Pawn extends Piece{
             const squareUpRight = this.square.getSquareUpRight()
             if(squareUpRight){
                 const pieceToKill = board.findPiece(squareUpRight)
-                if(pieceToKill && pieceToKill.getColor() === 'black'){
-                    possibleMoves.push({'newSquare': squareUpRight})
+                const canEnPassant = lastMove && lastMove.piece.type === 'pawn' &&
+                    lastMove.prevPosition.column === lastMove.nextPosition.column && lastMove.prevPosition.column === squareUpRight.getColumn() &&
+                    lastMove.prevPosition.row === squareUpRight.getRow() + 1 &&
+                    lastMove.nextPosition.row === squareUpRight.getRow() - 1
+                if((pieceToKill && pieceToKill.getColor() === 'black') || canEnPassant){
+                    let newMove = {'newSquare': squareUpRight}
+                    if(canEnPassant){
+                        const otherPawnSquare = board.findSquare(lastMove.nextPosition.row, lastMove.nextPosition.column)
+                        const otherPawn = board.findPiece(otherPawnSquare)
+                        newMove.moveType = {
+                            'type': 'enpassant',
+                            'otherPawn': otherPawn
+                        }
+                    }
+                    possibleMoves.push(newMove)
                 }
             }
             const squareUpLeft = this.square.getSquareUpLeft()
             if(squareUpLeft){
                 const pieceToKill = board.findPiece(squareUpLeft)
-                if(pieceToKill && pieceToKill.getColor() === 'black'){
-                    possibleMoves.push({'newSquare': squareUpLeft})
+                const canEnPassant = lastMove && lastMove.piece.type === 'pawn' &&
+                    lastMove.prevPosition.column === lastMove.nextPosition.column && lastMove.prevPosition.column === squareUpLeft.getColumn() &&
+                    lastMove.prevPosition.row === squareUpLeft.getRow() + 1 &&
+                    lastMove.nextPosition.row === squareUpLeft.getRow() - 1
+                if((pieceToKill && pieceToKill.getColor() === 'black') || canEnPassant){
+                    let newMove = {'newSquare': squareUpLeft}
+                    if(canEnPassant){
+                        const otherPawnSquare = board.findSquare(lastMove.nextPosition.row, lastMove.nextPosition.column)
+                        const otherPawn = board.findPiece(otherPawnSquare)
+                        newMove.moveType = {
+                            'type': 'enpassant',
+                            'otherPawn': otherPawn
+                        }
+                    }
+                    possibleMoves.push(newMove)
                 }
             }
         } else {
@@ -116,15 +148,41 @@ export class Pawn extends Piece{
             const squareDownRight = this.square.getSquareDownRight()
             if(squareDownRight){
                 const pieceToKill = board.findPiece(squareDownRight)
-                if(pieceToKill && pieceToKill.getColor() === 'white'){
-                    possibleMoves.push({'newSquare': squareDownRight})
+                const canEnPassant = lastMove && lastMove.piece.type === 'pawn' &&
+                    lastMove.prevPosition.column === lastMove.nextPosition.column && lastMove.prevPosition.column === squareDownRight.getColumn() &&
+                    lastMove.prevPosition.row === squareDownRight.getRow() - 1 &&
+                    lastMove.nextPosition.row === squareDownRight.getRow() + 1
+                if((pieceToKill && pieceToKill.getColor() === 'white') || canEnPassant){
+                    let newMove = {'newSquare': squareDownRight}
+                    if(canEnPassant){
+                        const otherPawnSquare = board.findSquare(lastMove.nextPosition.row, lastMove.nextPosition.column)
+                        const otherPawn = board.findPiece(otherPawnSquare)
+                        newMove.moveType = {
+                            'type': 'enpassant',
+                            'otherPawn': otherPawn
+                        }
+                    }
+                    possibleMoves.push(newMove)
                 }
             }
             const squareDownLeft = this.square.getSquareDownLeft()
             if(squareDownLeft){
                 const pieceToKill = board.findPiece(squareDownLeft)
-                if(pieceToKill && pieceToKill.getColor() === 'white'){
-                    possibleMoves.push({'newSquare': squareDownLeft})
+                const canEnPassant = lastMove && lastMove.piece.type === 'pawn' &&
+                    lastMove.prevPosition.column === lastMove.nextPosition.column && lastMove.prevPosition.column === squareDownLeft.getColumn() &&
+                    lastMove.prevPosition.row === squareDownLeft.getRow() - 1 &&
+                    lastMove.nextPosition.row === squareDownLeft.getRow() + 1
+                if((pieceToKill && pieceToKill.getColor() === 'white') || canEnPassant){
+                    let newMove = {'newSquare': squareDownLeft}
+                    if(canEnPassant){
+                        const otherPawnSquare = board.findSquare(lastMove.nextPosition.row, lastMove.nextPosition.column)
+                        const otherPawn = board.findPiece(otherPawnSquare)
+                        newMove.moveType = {
+                            'type': 'enpassant',
+                            'otherPawn': otherPawn
+                        }
+                    }
+                    possibleMoves.push(newMove)
                 }
             }
         }
