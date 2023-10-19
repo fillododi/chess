@@ -44,6 +44,11 @@ class Piece {
         console.log('filtering out checks possible moves are now', possibleMoves.map(move => move.newSquare.getPosition()))
         const move = possibleMoves.find(move => move.newSquare.getRow() === square.getRow() && move.newSquare.getColumn() === square.getColumn())
         if(move){
+            if(this.type === 'pawn'){
+                this.square.board.counter50Moves = 0
+            } else {
+                this.square.board.counter50Moves++
+            }
             if(move.moveType && move.moveType.type === 'castle'){
                 const rookToMove = move.moveType.rook
                 const newRookPosition = move.moveType.newRookPosition

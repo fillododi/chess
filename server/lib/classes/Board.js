@@ -8,6 +8,7 @@ export class Board {
         this.squares = []
         this.pieceList = []
         this.squares = []
+        this.counter50Moves = 0
         const alphabet = "abcdefgh"
         for(let i = 1; i <= 8; i++){
             for(let j = 0; j < 8; j++){
@@ -101,6 +102,7 @@ export class Board {
     }
 
     killPiece(piece){
+        this.counter50Moves = 0
         const newPieceList = this.pieceList.filter(p => p != piece)
         this.pieceList = newPieceList
     }

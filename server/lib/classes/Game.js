@@ -103,14 +103,19 @@ export class Game {
         const currentPosition = this.boardHistory[this.boardHistory.length - 1]
         const repetitions = this.boardHistory.filter((position, index) => {
             if(index%2 != (this.boardHistory.length)%2){ //the positions are considered equal only if it's the same player's turn to move
-                console.log(index)
-                console.log(JSON.stringify(position))
-                console.log(JSON.stringify(currentPosition))
                 return JSON.stringify(position) == JSON.stringify(currentPosition)
             }
         }).length
         console.log('this position has appeared', repetitions,'times')
         if(repetitions >= 3){
+            return true
+        }
+        return false
+    }
+
+    check50Moves(){
+        console.log(this.board.counter50Moves + " moves without taking pieces nor moving pawns")
+        if(this.board.counter50Moves  >= 100){
             return true
         }
         return false
@@ -122,6 +127,9 @@ export class Game {
         }
         if(this.check3Repetition()){
             return "threefold repetition"
+        }
+        if(this.check50Moves()){
+            return "50 moves rule"
         }
         return false
     }
