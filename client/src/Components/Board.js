@@ -8,7 +8,9 @@ import { trajectoryBishop, trajectoryKing, trajectoryKnight, trajectoryPawn, tra
 const Board = ({game, playerColor, isActivePlayer, sendJsonMessage}) => {
     const [selectedPiece, setSelectedPiece] = useState(null)
     const [availableSquares, setAvailableSquares] = useState([])
-
+    const [showPromotion, setShowPromotion] = useState(false)
+    const [promotion, setPromotion] = useState(null)
+    const [selectedSquare, setSelectedSquare] = useState({'row': null, 'col': null})
     
     const trajectoryHandler = () => {
         if (!selectedPiece || !game.board) {
@@ -41,31 +43,62 @@ const Board = ({game, playerColor, isActivePlayer, sendJsonMessage}) => {
 
     useEffect(trajectoryHandler, [selectedPiece]);
 
+    const handleSelectPromotion = (e) => {
+        e.preventDefault()
+        setPromotion(e.target.value)
+    }
 
-    const handleMove = (row, col) => {
-        if(selectedPiece && isActivePlayer){ //se si può muovere
-            const payload = {
-                "method": "move",
-                "playerColor": playerColor,
-                "gameId": game.id,
-                "move": {
-                    "piece": {
-                        "type": selectedPiece.type,
-                        "color": selectedPiece.color
-                    },
-                    "prevPosition": {
-                        "row": selectedPiece.row,
-                        "column": selectedPiece.column
-                    },
-                    "nextPosition": {
-                        "row": row,
-                        "column": col.toLowerCase()
-                    }
-                }
+    useEffect(()=>{
+        if(promotion){
+            sendMoveRequest()
+            setShowPromotion(false)
+            setPromotion(null)
+        }
+    }, [promotion])
+
+    const sendMoveRequest = () => {
+        const payload = {
+            "method": "move",
+            "playerColor": playerColor,
+            "gameId": game.id,
+            "move": {
+                "piece": {
+                    "type": selectedPiece.type,
+                    "color": selectedPiece.color
+                },
+                "prevPosition": {
+                    "row": selectedPiece.row,
+                    "column": selectedPiece.column
+                },
+                "nextPosition": {
+                    "row": selectedSquare.row,
+                    "column": selectedSquare.col.toLowerCase()
+                },
+                "promotion": promotion
             }
-            sendJsonMessage(payload)
+        }
+        sendJsonMessage(payload)
+        // DESELEZIONE
+        setSelectedPiece(null);
+        setSelectedSquare({'row': null, 'col': null})
+    }
+
+    const handleMove = () => {
+        if(selectedPiece && isActivePlayer){ //se si può muovere
+            if(selectedPiece.type === 'pawn' && (selectedSquare.row === 1 || selectedSquare.row === 8)){
+                setShowPromotion(true)
+            }
+            else {
+                sendMoveRequest()
+            }
         }
     }
+
+    useEffect(()=>{
+        if(selectedSquare.row && selectedSquare.col){
+            handleMove()
+        }
+    }, [selectedSquare])
 
     const getIcon = (row, col) => {
         const piece = game.board.find(piece => {
@@ -131,45 +164,60 @@ const Board = ({game, playerColor, isActivePlayer, sendJsonMessage}) => {
             setSelectedPiece(piece);
         }
         else {
-            handleMove(row, newCol)
-            setSelectedPiece(null); // DESELEZIONE           
+            setSelectedSquare({'row': row, 'col': newCol})
         }
     }
     
 
-    return <div className={'flex flex-col'}>
-        {playerColor === 'white'?
-         [8,7,6,5,4,3,2,1].map(row => {
-            return <div className='flex flex-row' key={row}>
-                {[1, 2, 3, 4, 5, 6, 7, 8].map(col => {
-                    return <div key={col} className={`${(row+col)%2? 'bg-white' : 'bg-green-600'} w-16 h-16 hover:bg-green-400 flex justify-center items-center`}
-                    onClick={handleClick.bind(this, row, col)}>
-                        {
-                            <div className={`pointer-events-none w-full h-full flex justify-center items-center ${availableSquares.some(e => e.row === row && e.col === col) && 'bg-blue-200'}`}>
-                                {getIcon(row, col)}
-                            </div>
-                        }
+    return <>
+        <div className={'flex flex-col'}>
+            {playerColor === 'white'?
+             [8,7,6,5,4,3,2,1].map(row => {
+                return <div className='flex flex-row' key={row}>
+                    {[1, 2, 3, 4, 5, 6, 7, 8].map(col => {
+                        return <div key={col} className={`${(row+col)%2? 'bg-white' : 'bg-green-600'} w-16 h-16 hover:bg-green-400 flex justify-center items-center`}
+                        onClick={handleClick.bind(this, row, col)}>
+                            {
+                                <div className={`pointer-events-none w-full h-full flex justify-center items-center ${availableSquares.some(e => e.row === row && e.col === col) && 'bg-blue-200'}`}>
+                                    {getIcon(row, col)}
+                                </div>
+                            }
+                    </div>
+                    })}
                 </div>
-                })}
-            </div>
-         }) 
-         :
-         [1,2,3,4,5,6,7,8].map(row => {
-            return <div key={row} className='flex flex-row'>
-                {[8,7,6,5,4,3,2,1].map(col => {
-                    return <div key={col} className={`${(row+col)%2? 'bg-white' : 'bg-green-600'} w-16 h-16 hover:bg-green-400 flex justify-center items-center`}
-                    onClick={handleClick.bind(this, row, col)}>
-                        {
-                            <div className={`pointer-events-none w-full h-full flex justify-center items-center ${availableSquares.some(e => e.row === row && e.col === col) && 'bg-blue-200'}`}>
-                                {getIcon(row, col)}
-                            </div>
-                        }
+             })
+             :
+             [1,2,3,4,5,6,7,8].map(row => {
+                return <div key={row} className='flex flex-row'>
+                    {[8,7,6,5,4,3,2,1].map(col => {
+                        return <div key={col} className={`${(row+col)%2? 'bg-white' : 'bg-green-600'} w-16 h-16 hover:bg-green-400 flex justify-center items-center`}
+                        onClick={handleClick.bind(this, row, col)}>
+                            {
+                                <div className={`pointer-events-none w-full h-full flex justify-center items-center ${availableSquares.some(e => e.row === row && e.col === col) && 'bg-blue-200'}`}>
+                                    {getIcon(row, col)}
+                                </div>
+                            }
+                    </div>
+                    })}
                 </div>
-                })}
-            </div>
-         }) 
-        }
-    </div>
+             })
+            }
+        </div>
+        {showPromotion && <div className={'fixed flex flex-row top-1/2 left-1/2 border-2 border-blue-400 gap-x-2 -translate-y-1/2'}>
+            <button value="knight" onClick={handleSelectPromotion} className={'border-blue-600 border-2 rounded-md p-2 hover:bg-blue-600 hover:text-white focus:bg-blue-600 focus:text-white'}>
+                <FaChessKnight className="text-xl pointer-events-none"/>
+            </button>
+            <button value="bishop" onClick={handleSelectPromotion} className={'border-blue-600 border-2 rounded-md p-2 hover:bg-blue-600 hover:text-white focus:bg-blue-600 focus:text-white'}>
+                <FaChessBishop className="text-xl pointer-events-none"/>
+            </button>
+            <button value='rook' onClick={handleSelectPromotion} className={'border-blue-600 border-2 rounded-md p-2 hover:bg-blue-600 hover:text-white focus:bg-blue-600 focus:text-white'}>
+                <FaChessRook className="text-xl pointer-events-none"/>
+            </button>
+            <button value='queen' onClick={handleSelectPromotion} className={'border-blue-600 border-2 rounded-md p-2 hover:bg-blue-600 hover:text-white focus:bg-blue-600 focus:text-white'}>
+                <FaChessQueen className="text-xl pointer-events-none"/>
+            </button>
+        </div>}
+    </>
 }
 
 export default Board

@@ -484,7 +484,6 @@ export class King extends Piece{
         const otherColor = this.color === 'white'? 'black' : 'white'
         const board = this.getSquare().getBoard()
         if(specialMoves && !this.hasMoved && !board.getAttackedSquaresByColor(otherColor).includes(this.square)){
-            console.log('for castle: '+ board.getAttackedSquaresByColor(otherColor))
             const squareRight = this.square.getSquareRight()
             if(squareRight && !squareRight.getPiece() && !board.getAttackedSquaresByColor(otherColor).includes(squareRight)){
                 const square2Right = squareRight.getSquareRight()
@@ -511,7 +510,7 @@ export class King extends Piece{
                     if(!pieceOnSquare2Left &&!board.getAttackedSquaresByColor(otherColor).includes(square2Left)){
                         const square4Left = square2Left.getSquareLeft().getSquareLeft()
                         const pieceOnSquare4Left = square4Left.getPiece()
-                        if(pieceOnSquare4Left && pieceOnSquare4Left.type === 'rook' && pieceOnSquare4Left.color === this.color && pieceOnSquare4Left.hasMoved === false){
+                        if(square4Left && pieceOnSquare4Left && pieceOnSquare4Left.type === 'rook' && pieceOnSquare4Left.color === this.color && pieceOnSquare4Left.hasMoved === false){
                             possibleMoves.push({'newSquare': square2Left, 'moveType': {
                                 'type': 'castle',
                                 'rook': pieceOnSquare4Left,
