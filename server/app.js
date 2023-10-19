@@ -1,8 +1,7 @@
 import http from "http"
-import {server as webSocketServer} from "websocket"
+import {server as WebSocketServer} from "websocket"
 const httpServer = http.createServer()
 
-import {Board} from "./lib/classes/Board.js";
 import {Client} from "./lib/classes/Client.js";
 import {sendGameList, broadcastGameList} from "./lib/utils/communications.js";
 
@@ -11,7 +10,7 @@ httpServer.listen(5000, ()=>{console.log("Server listening on port 5000")}) //ap
 const clients = {} //dictionary dei client: SERVE SOLO PER DATI DI CONNESSIONE, NON DI GIOCO
 const games = {} //dictionary delle partite: contiene tutti i dati di gioco
 
-const wsServer = new webSocketServer({
+const wsServer = new WebSocketServer({
     "httpServer": httpServer
 })
 wsServer.on("request", request => { //quando il client manda richieste al socket del gioco
@@ -69,7 +68,7 @@ wsServer.on("request", request => { //quando il client manda richieste al socket
             game.clients.forEach(client => { //invia la risposta a tutti i client associati alla partita
                 client.connection.send(JSON.stringify(payload))
             })
-            if(game.clients.length == 2){ //se si è connesso il secondo giocatore: setta la partita e inizia
+            if(game.clients.length === 2){ //se si è connesso il secondo giocatore: setta la partita e inizia
                 game.start()
                 broadcastGameList(clients, games)
             }
@@ -77,7 +76,7 @@ wsServer.on("request", request => { //quando il client manda richieste al socket
         if(result.method === "leave"){
             const clientId = result.clientId //client che ha abbandonato
             const gameId = result.gameId //partita abbandonata
-            if(clients[clientId].game.id != gameId){ //se non coincidono, ovvero errore
+            if(clients[clientId].game.id !== gameId){ //se non coincidono, ovvero errore
                 console.log('error')
                 return
             }
@@ -86,7 +85,7 @@ wsServer.on("request", request => { //quando il client manda richieste al socket
         if(result.method === "draw"){
             const clientId = result.clientId
             const gameId = result.gameId
-            if(clients[clientId].game.id != gameId){ //se non coincidono, ovvero errore
+            if(clients[clientId].game.id !== gameId){ //se non coincidono, ovvero errore
                 return
             }
             const game = games[gameId] //trova la partita
@@ -120,7 +119,7 @@ wsServer.on("request", request => { //quando il client manda richieste al socket
         if(result.method === "drawReject"){
             const clientId = result.clientId
             const gameId = result.gameId
-            if(clients[clientId].game.id != gameId){ //se non coincidono, ovvero errore
+            if(clients[clientId].game.id !== gameId){ //se non coincidono, ovvero errore
                 return
             }
             const game = games[gameId] //trova la partita
@@ -142,7 +141,7 @@ wsServer.on("request", request => { //quando il client manda richieste al socket
             const clientId = result.clientId
             const gameId = result.gameId
             const message = result.message
-            if(clients[clientId].game.id != gameId){ //se non coincidono, ovvero errore
+            if(clients[clientId].game.id !== gameId){ //se non coincidono, ovvero errore
                 return
             }
             const game = games[gameId] //trova la partita
@@ -191,7 +190,7 @@ wsServer.on("request", request => { //quando il client manda richieste al socket
                                 game.turn += 1 //aumenta il numero del turno se ha mosso il nero
                                 console.log("It's now turn", game.turn)
                             }
-                            game.active_player = game.players.find(player => player != game.active_player) //passa il turno
+                            game.active_player = game.players.find(player => player !== game.active_player) //passa il turno
                         }
                         //controlla parità
                         const draw = game.checkDraw()
