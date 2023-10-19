@@ -178,6 +178,7 @@ wsServer.on("request", request => { //quando il client manda richieste al socket
                     if(success){
                         console.log(game.active_player.color, "moved his", pieceType, "to", newCol, newRow)
                         game.history.push(result.move) //aggiunge la mossa allo storico
+                        game.boardHistory.push(game.board.json()) //aggiunge la mossa allo storico
                         if(result.move.promotion){
                             game.board.killPiece(selectedPiece)
                             game.board.addPiece(result.move.promotion, game.active_player.color, newSquare)

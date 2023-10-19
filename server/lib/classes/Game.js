@@ -14,6 +14,7 @@ export class Game {
         this.turn = null
         this.board = null
         this.history = []
+        this.boardHistory = []
         this.chat = []
     }
 
@@ -72,6 +73,7 @@ export class Game {
         this.active_player = this.players.find(player => player.color === 'white')
         this.turn = 1
         this.board = new Board(this)
+        this.boardHistory.push(this.board.json())
         const payload = {
             "method": "start",
             "game": this.json(),
@@ -93,14 +95,33 @@ export class Game {
         const activePlayerPossibleMoves = this.board.getPossibleMovesByColor(this.active_player.color)
         if(activePlayerPossibleMoves.length === 0 && !this.board.getPlayerColorUnderCheck()){
             return true
-        } else {
-            return false
         }
+        return false
+    }
+
+    check5Repetition(){
+        const currentPosition = this.boardHistory[this.boardHistory.length - 1]
+        const repetitions = this.boardHistory.filter((position, index) => {
+            if(index%2 != (this.boardHistory.length)%2){ //the positions are considered equal only if it's the same player's turn to move
+                console.log(index)
+                console.log(JSON.stringify(position))
+                console.log(JSON.stringify(currentPosition))
+                return JSON.stringify(position) == JSON.stringify(currentPosition)
+            }
+        }).length
+        console.log('this position has appeared', repetitions,'times')
+        if(repetitions >= 5){
+            return true
+        }
+        return false
     }
 
     checkDraw(){
         if(this.checkStalemate()){
             return "stalemate"
+        }
+        if(this.check5Repetition()){
+            return "fivefold repetition"
         }
         return false
     }

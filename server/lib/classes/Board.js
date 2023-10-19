@@ -111,11 +111,19 @@ export class Board {
 
     json(){
         const alphabet = "abcdefgh"
-        return this.pieceList.map(piece => {return { //sostituisce numeri colonne con lettere
+        const sortedPieceList = this.pieceList.sort((piece1, piece2) => {
+            if(piece1.getSquare().getColumn() === piece2.getSquare().getColumn()){
+                return piece1.getSquare().getRow() - piece2.getSquare().getRow()
+            }
+            return piece1.getSquare().getColumn() - piece2.getSquare().getColumn()
+        })
+        return sortedPieceList.map(piece => {return { //sostituisce numeri colonne con lettere
             "color": piece.color,
             "type": piece.type,
             "column": piece.getSquare().getColumn(),
-            "row": piece.getSquare().getRow()
+            "row": piece.getSquare().getRow(),
+            "canStillCastle": (piece.type === 'king' || piece.type === 'rook')? !piece.hasMoved : null,
+            "canEnPassant": piece.type === 'pawn'? piece.getPossibleMoves().filter(move => (move.moveType && move.moveType.type === 'enpassant')).map(move => move.newSquare.getPosition()) : null
         }});
     }
 
