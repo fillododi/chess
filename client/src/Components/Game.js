@@ -83,10 +83,6 @@ const Game = ({clientId, gameId, game, leavingPlayer, setLeavingPlayer, setShowG
                         <div key={player.clientId} className={'border-2 border-gray-800 border-dashed p-4'}>
                             <p>{player.clientId}</p>
                             <p>{player.color}</p>
-                    {game.clients.map(client =>
-                        <div key={client.clientId} className={'border-2 border-gray-800 border-dashed p-4'}>
-                            <p>{client.clientId}</p>
-                            <p>{client.color}</p>
                         </div>
                     )}
                 </div>
