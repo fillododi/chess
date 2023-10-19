@@ -99,7 +99,7 @@ export class Game {
         return false
     }
 
-    check5Repetition(){
+    check3Repetition(){
         const currentPosition = this.boardHistory[this.boardHistory.length - 1]
         const repetitions = this.boardHistory.filter((position, index) => {
             if(index%2 != (this.boardHistory.length)%2){ //the positions are considered equal only if it's the same player's turn to move
@@ -110,7 +110,7 @@ export class Game {
             }
         }).length
         console.log('this position has appeared', repetitions,'times')
-        if(repetitions >= 5){
+        if(repetitions >= 3){
             return true
         }
         return false
@@ -120,8 +120,8 @@ export class Game {
         if(this.checkStalemate()){
             return "stalemate"
         }
-        if(this.check5Repetition()){
-            return "fivefold repetition"
+        if(this.check3Repetition()){
+            return "threefold repetition"
         }
         return false
     }
