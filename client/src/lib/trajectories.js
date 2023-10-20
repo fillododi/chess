@@ -183,42 +183,42 @@ export const trajectoryKing = (selectedPiece, board) => {
     const square = getSquare(selectedPiece)
     const squareUp = getSquareUp(square)
     let piece = findPiece(board, squareUp.row, squareUp.col)
-    if(!piece || piece.color != selectedPiece.color){
+    if(!piece || piece.color !== selectedPiece.color){
         possibleMoves.push(squareUp)
     }
     const squareUpRight = getSquareUpRight(square)
     piece = findPiece(board, squareUpRight.row, squareUpRight.col)
-    if(!piece || piece.color != selectedPiece.color){
+    if(!piece || piece.color !== selectedPiece.color){
         possibleMoves.push(squareUpRight)
     }
     const squareRight = getSquareRight(square)
     piece = findPiece(board, squareRight.row, squareRight.col)
-    if(!piece || piece.color != selectedPiece.color){
+    if(!piece || piece.color !== selectedPiece.color){
         possibleMoves.push(squareRight)
     }
     const squareDownRight = getSquareDownRight(square)
     piece = findPiece(board, squareDownRight.row, squareDownRight.col)
-    if(!piece || piece.color != selectedPiece.color){
+    if(!piece || piece.color !== selectedPiece.color){
         possibleMoves.push(squareDownRight)
     }
     const squareDown = getSquareDown(square)
     piece = findPiece(board, squareDown.row, squareDown.col)
-    if(!piece || piece.color != selectedPiece.color){
+    if(!piece || piece.color !== selectedPiece.color){
         possibleMoves.push(squareDown)
     }
     const squareDownLeft = getSquareDownLeft(square)
     piece = findPiece(board, squareDownLeft.row, squareDownLeft.col)
-    if(!piece || piece.color != selectedPiece.color){
+    if(!piece || piece.color !== selectedPiece.color){
         possibleMoves.push(squareDownLeft)
     }
     const squareLeft = getSquareLeft(square)
     piece = findPiece(board, squareLeft.row, squareLeft.col)
-    if(!piece || piece.color != selectedPiece.color){
+    if(!piece || piece.color !== selectedPiece.color){
         possibleMoves.push(squareLeft)
     }
     const squareUpLeft = getSquareUpLeft(square)
     piece = findPiece(board, squareUpLeft.row, squareUpLeft.col)
-    if(!piece || piece.color != selectedPiece.color){
+    if(!piece || piece.color !== selectedPiece.color){
         possibleMoves.push(squareUpLeft)
     }
     return possibleMoves
@@ -228,48 +228,46 @@ export const trajectoryKing = (selectedPiece, board) => {
 export const trajectoryKnight = (selectedPiece, board) => {
     let possibleMoves = []
     const square = getSquare(selectedPiece)
-    console.log(getSquareUp(square))
     const squareUUL = getSquareLeft(get2SquareUp(square))
     let piece = findPiece(board, squareUUL.row, squareUUL.col)
-    if(!piece || piece.color != selectedPiece.color){
+    if(!piece || piece.color !== selectedPiece.color){
         possibleMoves.push(squareUUL)
     }
     const squareUUR = getSquareRight(get2SquareUp(square))
     piece = findPiece(board, squareUUR.row, squareUUR.col)
-    if(!piece || piece.color != selectedPiece.color){
+    if(!piece || piece.color !== selectedPiece.color){
         possibleMoves.push(squareUUR)
     }
     const squareURR = getSquareRight(getSquareRight(getSquareUp(square)))
     piece = findPiece(board, squareURR.row, squareURR.col)
-    if(!piece || piece.color != selectedPiece.color){
+    if(!piece || piece.color !== selectedPiece.color){
         possibleMoves.push(squareURR)
     }
     const squareDRR = getSquareRight(getSquareRight(getSquareDown(square)))
     piece = findPiece(board, squareDRR.row, squareDRR.col)
-    if(!piece || piece.color != selectedPiece.color){
+    if(!piece || piece.color !== selectedPiece.color){
         possibleMoves.push(squareDRR)
     }
     const squareDDR = getSquareRight(get2SquareDown(square))
     piece = findPiece(board, squareDDR.row, squareDDR.col)
-    if(!piece || piece.color != selectedPiece.color){
+    if(!piece || piece.color !== selectedPiece.color){
         possibleMoves.push(squareDDR)
     }
     const squareDDL = getSquareLeft(get2SquareDown(square))
     piece = findPiece(board, squareDDL.row, squareDDL.col)
-    if(!piece || piece.color != selectedPiece.color){
+    if(!piece || piece.color !== selectedPiece.color){
         possibleMoves.push(squareDDL)
     }
     const squareDLL = getSquareLeft(getSquareLeft(getSquareDown(square)))
     piece = findPiece(board, squareDLL.row, squareDLL.col)
-    if(!piece || piece.color != selectedPiece.color){
+    if(!piece || piece.color !== selectedPiece.color){
         possibleMoves.push(squareDLL)
     }
     const squareULL = getSquareLeft(getSquareLeft(getSquareUp(square)))
     piece = findPiece(board, squareULL.row, squareULL.col)
-    if(!piece || piece.color != selectedPiece.color){
+    if(!piece || piece.color !== selectedPiece.color){
         possibleMoves.push(squareULL)
     }
-    console.log(possibleMoves)
     return possibleMoves
 }
 

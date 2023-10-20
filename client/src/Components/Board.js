@@ -4,6 +4,7 @@ import {FaRegChessPawn, FaRegChessKnight, FaRegChessBishop, FaRegChessRook, FaRe
     } from "react-icons/fa6";
 
 import { trajectoryBishop, trajectoryKing, trajectoryKnight, trajectoryPawn, trajectoryRook } from "../lib/trajectories";
+import {charToNum, findPiece} from "../lib/utils";
 
 const Board = ({game, playerColor, isActivePlayer, sendJsonMessage}) => {
     const [selectedPiece, setSelectedPiece] = useState(null)
@@ -11,37 +12,72 @@ const Board = ({game, playerColor, isActivePlayer, sendJsonMessage}) => {
     const [showPromotion, setShowPromotion] = useState(false)
     const [promotion, setPromotion] = useState(null)
     const [selectedSquare, setSelectedSquare] = useState({'row': null, 'col': null})
-    
-    const trajectoryHandler = () => {
-        if (!selectedPiece || !game.board) {
-            setAvailableSquares([])
-            return
-        };
-        switch (selectedPiece.type){
+
+    const getTrajectory = (piece, board) => {
+        let squaresInTrajectory = []
+        if (!piece || !board) {
+            return []
+        }
+        switch (piece.type){
             case 'pawn':
-                setAvailableSquares(trajectoryPawn(selectedPiece, game.board));
+                squaresInTrajectory = trajectoryPawn(piece, board);
                 break;
             case 'rook':
-                setAvailableSquares(trajectoryRook(selectedPiece, game.board));
+                squaresInTrajectory = trajectoryRook(piece, board);
                 break;
             case 'knight':
-                setAvailableSquares(trajectoryKnight(selectedPiece, game.board));
+                squaresInTrajectory = trajectoryKnight(piece, board);
                 break;
             case 'bishop':
-                setAvailableSquares(trajectoryBishop(selectedPiece, game.board));
+                squaresInTrajectory = trajectoryBishop(piece, board);
                 break;
             case 'queen':
-                setAvailableSquares([...trajectoryRook(selectedPiece, game.board), ...trajectoryBishop(selectedPiece, game.board)]);
+                squaresInTrajectory = [...trajectoryRook(piece, board), ...trajectoryBishop(piece, board)]
                 break;
             case 'king':
-                setAvailableSquares(trajectoryKing(selectedPiece, game.board));
+                squaresInTrajectory = trajectoryKing(piece, board);
                 break;
             default:
                 break;
         }
+        return squaresInTrajectory
     }
 
-    useEffect(trajectoryHandler, [selectedPiece]);
+    const checkIfCheck = (board, color) => {
+        let isCheck = false
+        const kingToCheck = board.find(piece => piece.type === 'king' && piece.color === color)
+        board.forEach(piece => {
+            if(piece.color !== color){
+                getTrajectory(piece, board).forEach(square => {
+                    if(square.row === kingToCheck.row && square.col === charToNum(kingToCheck.column)) {
+                        isCheck = true
+                    }
+                })
+            }
+        })
+        return isCheck
+    }
+
+    const checkIfCheckAfterMove = (square) => {
+        let virtualBoard = game.board.map(piece => Object.assign({}, piece))
+        const virtualPiece = findPiece(virtualBoard, selectedPiece.row, charToNum(selectedPiece.column))
+        const virtualPieceToKill = findPiece(virtualBoard, square.row, square.col)
+        if(virtualPieceToKill){
+            virtualBoard = virtualBoard.filter(piece => piece !== virtualPieceToKill)
+        }
+        virtualPiece.row = square.row
+        virtualPiece.column = "abcdefgh"[square.col - 1]
+
+        return checkIfCheck(virtualBoard, virtualPiece.color)
+    }
+    
+    const getPossibleMoves = () => {
+        const squaresInTrajectory = getTrajectory(selectedPiece, game.board)
+        const possibleSquaresAfterCheck = squaresInTrajectory.filter(square => !checkIfCheckAfterMove(square))
+        setAvailableSquares(possibleSquaresAfterCheck);
+    }
+
+    useEffect(getPossibleMoves, [selectedPiece]);
 
     const handleSelectPromotion = (e) => {
         e.preventDefault()
