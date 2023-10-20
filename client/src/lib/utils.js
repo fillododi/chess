@@ -1,6 +1,7 @@
 export const findPiece = (board, row, col) => {
-    console.log(board)
-    return board.find(piece => piece.row === row && piece.column.toLowerCase() === numToChar(col));
+    return board.find(piece => {
+        return piece.row && piece.column && piece.row === row && piece.column.toLowerCase() === numToChar(col)
+    });
 }
 
 const numToChar = (num) => {

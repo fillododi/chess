@@ -81,7 +81,14 @@ const Board = ({game, playerColor, isActivePlayer, sendJsonMessage}) => {
     }
 
     const checkIfCheckAfterMove = (square) => {
-        let virtualBoard = game.board.map(piece => Object.assign({}, piece))
+        console.log("VIRTUALING")
+        let virtualBoard = []
+        game.board.forEach(piece => {
+            const newPiece = Object.assign({}, piece)
+            console.log(piece, newPiece)
+            virtualBoard.push(newPiece)
+        })
+        console.log("COMPARISON:", game.board, virtualBoard)
         const virtualPiece = findPiece(virtualBoard, selectedPiece.row, charToNum(selectedPiece.column))
         const virtualPieceToKill = findPiece(virtualBoard, square.row, square.col)
         if(virtualPieceToKill){
@@ -89,13 +96,13 @@ const Board = ({game, playerColor, isActivePlayer, sendJsonMessage}) => {
         }
         virtualPiece.row = square.row
         virtualPiece.column = "abcdefgh"[square.col - 1]
-
+        console.log("LOOKING FOR CHECK")
         return checkIfCheck(virtualBoard, virtualPiece.color)
     }
     
     const getPossibleMoves = () => {
         const squaresInTrajectory = getTrajectory(selectedPiece, game.board)
-        if (selectedPiece.type === 'king' && selectedPiece.canStillCastle) {
+        if(selectedPiece.type === 'king' && selectedPiece.canStillCastle) {
             const square = getSquare(selectedPiece)
             const squareLeft = getSquareLeft(square)
             const square2Left = getSquareLeft(squareLeft)
@@ -128,6 +135,12 @@ const Board = ({game, playerColor, isActivePlayer, sendJsonMessage}) => {
                 }
             }
         }
+            if(selectedPiece.type === 'pawn' && selectedPiece.canEnPassant.length > 0){
+                selectedPiece.canEnPassant.forEach(square => {
+                    console.log(square)
+                    squaresInTrajectory.push({'row': square.row, 'col': charToNum(square.column)})
+                })
+            }
         const possibleSquaresAfterCheck = squaresInTrajectory.filter(square => !checkIfCheckAfterMove(square))
         setAvailableSquares(possibleSquaresAfterCheck);
     }
@@ -182,7 +195,7 @@ const Board = ({game, playerColor, isActivePlayer, sendJsonMessage}) => {
 
     const handleMove = () => {
         if(selectedPiece && isActivePlayer){ //se si può muovere
-            if(selectedPiece.type === 'pawn' && (selectedSquare.row === 1 || selectedSquare.row === 8)){
+            if(selectedPiece.type === 'pawn' && availableSquares.find(move => move.row === selectedSquare.row && move.col === charToNum(selectedSquare.col)) && (selectedSquare.row === 1 || selectedSquare.row === 8)){
                 setShowPromotion(true)
             }
             else {
