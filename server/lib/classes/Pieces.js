@@ -26,7 +26,7 @@ class Piece {
     move(square){
         let possibleMoves = this.getPossibleMoves()
         console.log('possible moves are', possibleMoves.map(move => move.newSquare.getPosition()))
-        const newMoves = possibleMoves.filter(move => {
+        possibleMoves = possibleMoves.filter(move => {
             const virtualBoard = new Board(square.board.game) //crea nuova scacchiera virtuale
             const oldSquare = this.getSquare() //casella di questo pezzo prima della mossa
             const oldRow = oldSquare.getRow()
@@ -40,7 +40,6 @@ class Piece {
             const stillCheck = virtualBoard.getPlayerColorUnderCheck() === this.color //guarda se è ancora scacco dopo aver mosso
             return !stillCheck //se non è più scacco tiene la mossa
         })
-        possibleMoves = newMoves
         console.log('filtering out checks possible moves are now', possibleMoves.map(move => move.newSquare.getPosition()))
         const move = possibleMoves.find(move => move.newSquare.getRow() === square.getRow() && move.newSquare.getColumn() === square.getColumn())
         if(move){
@@ -214,7 +213,7 @@ export class Rook extends Piece{
         while(squareUp){
             pieceOnSquareUp = squareUp.getPiece()
             if(pieceOnSquareUp){
-                if (pieceOnSquareUp.color != this.color){
+                if (pieceOnSquareUp.color !== this.color){
                     possibleMoves.push({'newSquare': squareUp})
                 }
                 break
@@ -228,7 +227,7 @@ export class Rook extends Piece{
         while(squareDown){
             pieceOnSquareDown = squareDown.getPiece()
             if(pieceOnSquareDown){
-                if (pieceOnSquareDown.color != this.color){
+                if (pieceOnSquareDown.color !== this.color){
                     possibleMoves.push({'newSquare': squareDown})
                 }
                 break
@@ -242,7 +241,7 @@ export class Rook extends Piece{
         while(squareRight){
             pieceOnSquareRight = squareRight.getPiece()
             if(pieceOnSquareRight){
-                if (pieceOnSquareRight.color != this.color){
+                if (pieceOnSquareRight.color !== this.color){
                     possibleMoves.push({'newSquare': squareRight})
                 }
                 break
@@ -256,7 +255,7 @@ export class Rook extends Piece{
         while(squareLeft){
             pieceOnSquareLeft = squareLeft.getPiece()
             if(pieceOnSquareLeft){
-                if (pieceOnSquareLeft.color != this.color){
+                if (pieceOnSquareLeft.color !== this.color){
                     possibleMoves.push({'newSquare': squareLeft})
                 }
                 break
@@ -281,7 +280,7 @@ export class Bishop extends Piece{
         while(squareUpRight){
             pieceOnSquareUpRight = squareUpRight.getPiece()
             if(pieceOnSquareUpRight){
-                if (pieceOnSquareUpRight.color != this.color){
+                if (pieceOnSquareUpRight.color !== this.color){
                     possibleMoves.push({'newSquare': squareUpRight})
                 }
                 break
@@ -295,7 +294,7 @@ export class Bishop extends Piece{
         while(squareDownRight){
             pieceOnSquareDownRight = squareDownRight.getPiece()
             if(pieceOnSquareDownRight){
-                if (pieceOnSquareDownRight.color != this.color){
+                if (pieceOnSquareDownRight.color !== this.color){
                     possibleMoves.push({'newSquare': squareDownRight})
                 }
                 break
@@ -309,7 +308,7 @@ export class Bishop extends Piece{
         while(squareUpLeft){
             pieceOnSquareUpLeft = squareUpLeft.getPiece()
             if(pieceOnSquareUpLeft){
-                if (pieceOnSquareUpLeft.color != this.color){
+                if (pieceOnSquareUpLeft.color !== this.color){
                     possibleMoves.push({'newSquare': squareUpLeft})
                 }
                 break
@@ -323,7 +322,7 @@ export class Bishop extends Piece{
         while(squareDownLeft){
             pieceOnSquareDownLeft = squareDownLeft.getPiece()
             if(pieceOnSquareDownLeft){
-                if (pieceOnSquareDownLeft.color != this.color){
+                if (pieceOnSquareDownLeft.color !== this.color){
                     possibleMoves.push({'newSquare': squareDownLeft})
                 }
                 break
@@ -350,13 +349,13 @@ export class Knight extends Piece{
             if(square2Ups){
                 if(square2Ups.getSquareLeft()){
                     const piece = square2Ups.getSquareLeft().getPiece()
-                    if(!piece || piece.getColor() != this.color){
+                    if(!piece || piece.getColor() !== this.color){
                         possibleMoves.push({'newSquare': square2Ups.getSquareLeft()})
                     }
                 }
                 if(square2Ups.getSquareRight()){
                     const piece = square2Ups.getSquareRight().getPiece()
-                    if(!piece || piece.getColor() != this.color){
+                    if(!piece || piece.getColor() !== this.color){
                         possibleMoves.push({'newSquare': square2Ups.getSquareRight()})
                     }
                 }
@@ -364,7 +363,7 @@ export class Knight extends Piece{
             if(squareUp.getSquareLeft()){
                 if (squareUp.getSquareLeft().getSquareLeft()){
                     const piece = squareUp.getSquareLeft().getSquareLeft().getPiece()
-                    if(!piece || piece.getColor() != this.color){
+                    if(!piece || piece.getColor() !== this.color){
                         possibleMoves.push({'newSquare': squareUp.getSquareLeft().getSquareLeft()})
                     }
                 }
@@ -372,7 +371,7 @@ export class Knight extends Piece{
             if(squareUp.getSquareRight()){
                 if (squareUp.getSquareRight().getSquareRight()){
                     const piece = squareUp.getSquareRight().getSquareRight().getPiece()
-                    if(!piece || piece.getColor() != this.color){
+                    if(!piece || piece.getColor() !== this.color){
                         possibleMoves.push({'newSquare': squareUp.getSquareRight().getSquareRight()})
                     }
                 }
@@ -384,13 +383,13 @@ export class Knight extends Piece{
             if(square2Downs){
                 if(square2Downs.getSquareLeft()){
                     const piece = square2Downs.getSquareLeft().getPiece()
-                    if(!piece || piece.getColor() != this.color){
+                    if(!piece || piece.getColor() !== this.color){
                         possibleMoves.push({'newSquare': square2Downs.getSquareLeft()})
                     }
                 }
                 if(square2Downs.getSquareRight()){
                     const piece = square2Downs.getSquareRight().getPiece()
-                    if(!piece || piece.getColor() != this.color){
+                    if(!piece || piece.getColor() !== this.color){
                         possibleMoves.push({'newSquare': square2Downs.getSquareRight()})
                     }
                 }
@@ -398,7 +397,7 @@ export class Knight extends Piece{
             if(squareDown.getSquareLeft()){
                 if (squareDown.getSquareLeft().getSquareLeft()){
                     const piece = squareDown.getSquareLeft().getSquareLeft().getPiece()
-                    if(!piece || piece.getColor() != this.color){
+                    if(!piece || piece.getColor() !== this.color){
                         possibleMoves.push({'newSquare': squareDown.getSquareLeft().getSquareLeft()})
                     }
                 }
@@ -406,7 +405,7 @@ export class Knight extends Piece{
             if(squareDown.getSquareRight()){
                 if (squareDown.getSquareRight().getSquareRight()){
                     const piece = squareDown.getSquareRight().getSquareRight().getPiece()
-                    if(!piece || piece.getColor() != this.color){
+                    if(!piece || piece.getColor() !== this.color){
                         possibleMoves.push({'newSquare': squareDown.getSquareRight().getSquareRight()})
                     }
                 }
@@ -433,56 +432,56 @@ export class King extends Piece{
         const squareUp = this.square.getSquareUp()
         if(squareUp){
             let pieceOnSquareUp = squareUp.getPiece()
-            if(!pieceOnSquareUp || pieceOnSquareUp.color != this.color){
+            if(!pieceOnSquareUp || pieceOnSquareUp.color !== this.color){
                 possibleMoves.push({'newSquare': squareUp})
             }
         }
         const squareUpRight = this.square.getSquareUpRight()
         if(squareUpRight){
             let pieceOnSquareUpRight = squareUpRight.getPiece()
-            if(!pieceOnSquareUpRight || pieceOnSquareUpRight.color != this.color){
+            if(!pieceOnSquareUpRight || pieceOnSquareUpRight.color !== this.color){
                 possibleMoves.push({'newSquare': squareUpRight})
             }
         }
         const squareRight = this.square.getSquareRight()
         if(squareRight){
             let pieceOnSquareRight = squareRight.getPiece()
-            if(!pieceOnSquareRight || pieceOnSquareRight.color != this.color){
+            if(!pieceOnSquareRight || pieceOnSquareRight.color !== this.color){
                 possibleMoves.push({'newSquare': squareRight})
             }
         }
         const squareDownRight = this.square.getSquareDownRight()
         if(squareDownRight){
             let pieceOnSquareDownRight = squareDownRight.getPiece()
-            if(!pieceOnSquareDownRight || pieceOnSquareDownRight.color != this.color){
+            if(!pieceOnSquareDownRight || pieceOnSquareDownRight.color !== this.color){
                 possibleMoves.push({'newSquare': squareDownRight})
             }
         }
         const squareDown = this.square.getSquareDown()
         if(squareDown){
             let pieceOnSquareDown = squareDown.getPiece()
-            if(!pieceOnSquareDown || pieceOnSquareDown.color != this.color){
+            if(!pieceOnSquareDown || pieceOnSquareDown.color !== this.color){
                 possibleMoves.push({'newSquare': squareDown})
             }
         }
         const squareDownLeft = this.square.getSquareDownLeft()
         if(squareDownLeft){
             let pieceOnSquareDownLeft = squareDownLeft.getPiece()
-            if(!pieceOnSquareDownLeft || pieceOnSquareDownLeft.color != this.color){
+            if(!pieceOnSquareDownLeft || pieceOnSquareDownLeft.color !== this.color){
                 possibleMoves.push({'newSquare': squareDownLeft})
             }
         }
         const squareLeft = this.square.getSquareLeft()
         if(squareLeft){
             let pieceOnSquareLeft = squareLeft.getPiece()
-            if(!pieceOnSquareLeft || pieceOnSquareLeft.color != this.color){
+            if(!pieceOnSquareLeft || pieceOnSquareLeft.color !== this.color){
                 possibleMoves.push({'newSquare': squareLeft})
             }
         }
         const squareUpLeft = this.square.getSquareUpLeft()
         if(squareUpLeft){
             let pieceOnSquareUpLeft = squareUpLeft.getPiece()
-            if(!pieceOnSquareUpLeft || pieceOnSquareUpLeft.color != this.color){
+            if(!pieceOnSquareUpLeft || pieceOnSquareUpLeft.color !== this.color){
                 possibleMoves.push({'newSquare': squareUpLeft})
             }
         }
@@ -516,8 +515,10 @@ export class King extends Piece{
                     const pieceOnSquare2Left = square2Left.getPiece()
                     if(!pieceOnSquare2Left &&!board.getAttackedSquaresByColor(otherColor).includes(square2Left)){
                         if(square2Left.getSquareLeft()){
-                            const square4Left = square2Left.getSquareLeft().getSquareLeft()
-                            if(square4Left){
+                            const square3Left = square2Left.getSquareLeft()
+                            const pieceOnSquare3Left = square3Left.getPiece()
+                            const square4Left = square3Left.getSquareLeft()
+                            if(square3Left && !pieceOnSquare3Left && square4Left){
                                 const pieceOnSquare4Left = square4Left.getPiece()
                                 if(square4Left && pieceOnSquare4Left && pieceOnSquare4Left.type === 'rook' && pieceOnSquare4Left.color === this.color && pieceOnSquare4Left.hasMoved === false){
                                     possibleMoves.push({'newSquare': square2Left, 'moveType': {
@@ -548,7 +549,7 @@ export class Queen extends Piece{
         while(squareUp){
             pieceOnSquareUp = squareUp.getPiece()
             if(pieceOnSquareUp){
-                if (pieceOnSquareUp.color != this.color){
+                if (pieceOnSquareUp.color !== this.color){
                     possibleMoves.push({'newSquare': squareUp})
                 }
                 break
@@ -562,7 +563,7 @@ export class Queen extends Piece{
         while(squareDown){
             pieceOnSquareDown = squareDown.getPiece()
             if(pieceOnSquareDown){
-                if (pieceOnSquareDown.color != this.color){
+                if (pieceOnSquareDown.color !== this.color){
                     possibleMoves.push({'newSquare': squareDown})
                 }
                 break
@@ -576,7 +577,7 @@ export class Queen extends Piece{
         while(squareRight){
             pieceOnSquareRight = squareRight.getPiece()
             if(pieceOnSquareRight){
-                if (pieceOnSquareRight.color != this.color){
+                if (pieceOnSquareRight.color !== this.color){
                     possibleMoves.push({'newSquare': squareRight})
                 }
                 break
@@ -590,7 +591,7 @@ export class Queen extends Piece{
         while(squareLeft){
             pieceOnSquareLeft = squareLeft.getPiece()
             if(pieceOnSquareLeft){
-                if (pieceOnSquareLeft.color != this.color){
+                if (pieceOnSquareLeft.color !== this.color){
                     possibleMoves.push({'newSquare': squareLeft})
                 }
                 break
@@ -604,7 +605,7 @@ export class Queen extends Piece{
         while(squareUpRight){
             pieceOnSquareUpRight = squareUpRight.getPiece()
             if(pieceOnSquareUpRight){
-                if (pieceOnSquareUpRight.color != this.color){
+                if (pieceOnSquareUpRight.color !== this.color){
                     possibleMoves.push({'newSquare': squareUpRight})
                 }
                 break
@@ -618,7 +619,7 @@ export class Queen extends Piece{
         while(squareDownRight){
             pieceOnSquareDownRight = squareDownRight.getPiece()
             if(pieceOnSquareDownRight){
-                if (pieceOnSquareDownRight.color != this.color){
+                if (pieceOnSquareDownRight.color !== this.color){
                     possibleMoves.push({'newSquare': squareDownRight})
                 }
                 break
@@ -632,7 +633,7 @@ export class Queen extends Piece{
         while(squareUpLeft){
             pieceOnSquareUpLeft = squareUpLeft.getPiece()
             if(pieceOnSquareUpLeft){
-                if (pieceOnSquareUpLeft.color != this.color){
+                if (pieceOnSquareUpLeft.color !== this.color){
                     possibleMoves.push({'newSquare': squareUpLeft})
                 }
                 break
@@ -646,7 +647,7 @@ export class Queen extends Piece{
         while(squareDownLeft){
             pieceOnSquareDownLeft = squareDownLeft.getPiece()
             if(pieceOnSquareDownLeft){
-                if (pieceOnSquareDownLeft.color != this.color){
+                if (pieceOnSquareDownLeft.color !== this.color){
                     possibleMoves.push({'newSquare': squareDownLeft})
                 }
                 break

@@ -3,7 +3,15 @@ import {FaRegChessPawn, FaRegChessKnight, FaRegChessBishop, FaRegChessRook, FaRe
     FaChessPawn, FaChessKnight, FaChessBishop, FaChessRook, FaChessKing, FaChessQueen,
     } from "react-icons/fa6";
 
-import { trajectoryBishop, trajectoryKing, trajectoryKnight, trajectoryPawn, trajectoryRook } from "../lib/trajectories";
+import {
+    trajectoryBishop,
+    trajectoryKing,
+    trajectoryKnight,
+    trajectoryPawn,
+    trajectoryRook,
+    getSquare,
+    getSquareLeft, getSquareRight
+} from "../lib/trajectories";
 import {charToNum, findPiece} from "../lib/utils";
 
 const Board = ({game, playerColor, isActivePlayer, sendJsonMessage}) => {
@@ -18,7 +26,7 @@ const Board = ({game, playerColor, isActivePlayer, sendJsonMessage}) => {
         if (!piece || !board) {
             return []
         }
-        switch (piece.type){
+        switch (piece.type) {
             case 'pawn':
                 squaresInTrajectory = trajectoryPawn(piece, board);
                 break;
@@ -41,6 +49,20 @@ const Board = ({game, playerColor, isActivePlayer, sendJsonMessage}) => {
                 break;
         }
         return squaresInTrajectory
+    }
+
+    const isSquareAttacked = (board, square) => {
+        let isAttacked = false
+        board.forEach(piece => {
+            if(piece.color !== playerColor){
+                getTrajectory(piece, board).forEach(move => {
+                    if(move.row === square.row && move.col === charToNum(square.col)){
+                        isAttacked = true
+                    }
+                })
+            }
+        })
+        return isAttacked
     }
 
     const checkIfCheck = (board, color) => {
@@ -73,11 +95,50 @@ const Board = ({game, playerColor, isActivePlayer, sendJsonMessage}) => {
     
     const getPossibleMoves = () => {
         const squaresInTrajectory = getTrajectory(selectedPiece, game.board)
+        if (selectedPiece.type === 'king' && selectedPiece.canStillCastle) {
+            const square = getSquare(selectedPiece)
+            const squareLeft = getSquareLeft(square)
+            const square2Left = getSquareLeft(squareLeft)
+            const square3Left = getSquareLeft(square2Left)
+            const squareRookLeft = getSquareLeft(square3Left)
+            const pieceOnSquareRookLeft = findPiece(game.board, squareRookLeft.row, squareRookLeft.col)
+            const squareRight = getSquareRight(square)
+            const square2Right = getSquareRight(squareRight)
+            const squareRookRight = getSquareRight(square2Right)
+            const pieceOnSquareRookRight = findPiece(game.board, squareRookRight.row, squareRookRight.col)
+            if(!isSquareAttacked(game.board, square)){
+                if(pieceOnSquareRookLeft && pieceOnSquareRookLeft.type === 'rook' && pieceOnSquareRookLeft.canStillCastle){
+                    if(!findPiece(game.board, squareLeft.row, squareLeft.col) &&
+                        !findPiece(game.board, square2Left.row, square2Left.col) &&
+                        !findPiece(game.board, square3Left.row, square3Left.col) &&
+                        !isSquareAttacked(game.board, squareLeft) &&
+                        !isSquareAttacked(game.board, square2Left)
+                    ){
+                        squaresInTrajectory.push(square2Left)
+                    }
+                }
+                if(pieceOnSquareRookRight && pieceOnSquareRookRight.type === 'rook' && pieceOnSquareRookRight.canStillCastle){
+                    if(!findPiece(game.board, squareRight.row, squareRight.col) &&
+                        !findPiece(game.board, square2Right.row, square2Right.col) &&
+                        !isSquareAttacked(game.board, squareRight) &&
+                        !isSquareAttacked(game.board, square2Right)
+                    ){
+                        squaresInTrajectory.push(square2Right)
+                    }
+                }
+            }
+        }
         const possibleSquaresAfterCheck = squaresInTrajectory.filter(square => !checkIfCheckAfterMove(square))
         setAvailableSquares(possibleSquaresAfterCheck);
     }
 
-    useEffect(getPossibleMoves, [selectedPiece]);
+    useEffect(()=>{
+        if(selectedPiece){
+            getPossibleMoves()
+        } else {
+            setAvailableSquares([])
+        }
+    }, [selectedPiece]);
 
     const handleSelectPromotion = (e) => {
         e.preventDefault()

@@ -1,6 +1,6 @@
 import { findPiece, charToNum } from "./utils"
 
-const getSquare = (selectedPiece) => {
+export const getSquare = (selectedPiece) => {
     return {'row': selectedPiece.row, 'col': charToNum(selectedPiece.column)};
 }
 
@@ -61,14 +61,14 @@ const getSquareDownRight = (square) => {
 }
 
 
-const getSquareRight = (square) => {
+export const getSquareRight = (square) => {
     if (square){
         return {'row': square.row, 'col': charToNum(square.col) + 1}
     }
     return null;
 }
 
-const getSquareLeft = (square) => {
+export const getSquareLeft = (square) => {
     if (square){
         return {'row': square.row, 'col': charToNum(square.col) - 1}
     }
